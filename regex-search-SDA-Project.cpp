@@ -18,116 +18,83 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "DynamicStack.h"
 
 /*
 * Convert infix regexp regexString to postfix notation.
 * Insert . as explicit concatenation operator.
 * Cheesy parser, return static buffer.
 */
-void re2post(char *regexString, char* postRegex, int &lengthPostRegex)
+
+int precedenceOf(char c)
 {
-	int nalternation, natom;
+	switch (c)
+	{
+	case '(': return 1;
+	case '|': return 2;
+	case '.': return 3;
+	case '?': return 4;
+	case '*': return 4;
+	case '+': return 4;
+	case '^': return 5;
+	default: return 6;
+	}
+}
 
-	struct {
-		int nalternation;
-		int natom;
-	} parentheses[100], *p;
-
-	p = parentheses;
-	nalternation = 0;
-	natom = 0;
+void regexInfixToPostfix(char *regexString, char* postRegex, int &lengthPostRegex)
+{
+	DynamicStack<char> stack;
+	char result[20];
+	int resLength = 0;
 	
 	for (int i = 0; regexString[i] != NULL; i++)
 	{
-		switch (regexString[i])
+		//current char
+		char c = regexString[i];
+
+		if (c == '(')
 		{
-			case '(':
-				if (natom > 1){
-					--natom;
-					postRegex[lengthPostRegex] = '.';
-					++lengthPostRegex;
-				}
-				if (p >= parentheses + 100)
-					return;
-				p->nalternation = nalternation;
-				p->natom = natom;
-				p++;
-				nalternation = 0;
-				natom = 0;
-				break;
-			case '|':
-				if (natom == 0)
-					return;
-				while (--natom > 0)
-				{
-					postRegex[lengthPostRegex] = '.';
-					++lengthPostRegex;
-				}
-					
-				nalternation++;
-				break;
-			case ')':
-				if (p == parentheses)
-					return;
-				if (natom == 0)
-					return;
-				while (--natom > 0)
-				{
-					postRegex[lengthPostRegex] = '.';
-					++lengthPostRegex;
-				}
-				for (; nalternation > 0; nalternation--)
-				{
-					postRegex[lengthPostRegex] = '|';
-					++lengthPostRegex;
-				}
-					
-				--p;
-				nalternation = p->nalternation;
-				natom = p->natom;
-				natom++;
-				break;
-			case '*':
-			case '+':
-			case '?':
-				if (natom == 0)
-					return;
-				postRegex[lengthPostRegex] = regexString[i];
-				++lengthPostRegex;
-				break;
-			case '.':
-				if (natom > 1){
-					--natom;
+			stack.Push(c);
+		}
+		else if (c == ')')
+		{
+			while (stack.Top() != '(')
+			{
+				postRegex[lengthPostRegex] = stack.Top();
+				lengthPostRegex++;
+				stack.Pop();
+			}
+			stack.Pop();
+		}
+		else
+		{
+			while (!stack.isEmpty())
+			{
+				char peekedChar = stack.Top();
 
-					postRegex[lengthPostRegex] = '.';
-					++lengthPostRegex;
-				}
-				natom++;
-				break;
-			default:
-				if (natom > 1){
-					--natom;
-					postRegex[lengthPostRegex] = '.';
-					++lengthPostRegex;
-				}
-				postRegex[lengthPostRegex] = regexString[i];
-				++lengthPostRegex;
+				int peekedCharPrecedence = precedenceOf(peekedChar);
+				int currentCharPrecedence = precedenceOf(c);
 
-				natom++;
-				break;
+				if (peekedCharPrecedence >= currentCharPrecedence)
+				{
+					postRegex[lengthPostRegex] = stack.Top();
+					lengthPostRegex++;
+					stack.Pop();
+				}
+				else
+				{
+					break;
+				}
+			}
+			stack.Push(c);
 		}
 	}
-	if (p != parentheses)
-		return;
-	while (--natom > 0)
+
+	while (!stack.isEmpty())
 	{
-		postRegex[lengthPostRegex] = '.';
-		++lengthPostRegex;
-	}
-	for (; nalternation > 0; nalternation--)
-	{
-		postRegex[lengthPostRegex] = '|';
-		++lengthPostRegex;
+		postRegex[lengthPostRegex] = stack.Top();
+		lengthPostRegex++;
+		stack.Pop();
 	}
 }
 
@@ -135,14 +102,15 @@ int main(int argc, char **argv)
 {
 	char postRegex[100];
 	int lengthPostRegex = 0;
-	re2post("(a|s)*d", postRegex, lengthPostRegex);
-	cout << "*****";
+	char* beginningRegex = "((a.b|c.d).(w.x|y.z))";
+	cout << beginningRegex << "----- beginning regex!" << endl;
+	regexInfixToPostfix(beginningRegex, postRegex, lengthPostRegex);
+	
+	cout << "FINAL:\n";
 	for (int i = 0; i < lengthPostRegex; i++)
 	{
 		cout << postRegex[i];
 	}
-	cout << "****";
-
 
 	system("pause");
 	return 0;
