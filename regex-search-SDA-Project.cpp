@@ -1,137 +1,63 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include<set>
-#include<stack>
-#include "RegexParser.h"
 #include "HelperFunctions.h"
-
-#include "dirent.h"
-
 
 int main(int argc, char* argv[])
 {
-	NFA required_nfa;
-	
-	/*cout << "\n\nDISPLAY:";
-	required_nfa.display();
-	cout << "\n\n";
-	required_nfa.match("aaaaaa");
-	cout << "\nRESULT: " << required_nfa.actualMatch(0, "ab") << endl;*/
-
-
-	DIR *dir;
-	struct dirent *ent;
-
+	//make sure we have file and regex provided
 	validateCmdParams(argc, argv);
-	
-	cout << argv[1] << endl;
-	string name = argv[1];
 
-	//"(a.b)"
-	required_nfa = required_nfa.re_to_nfa(argv[2]);
+	NFA regexMatcher;
 
-	string str;
+	//needed for getting all directory files
+	DIR *dir;
+	struct dirent *directoryEntry;
+
+	//argv 1 is the given file name or path from console
+	string path = argv[1];
+	string regex = argv[2];
+
+	bool regexIsEmpty = false;
+
+	if (!regex.empty())
+	{
+		regexMatcher = regexMatcher.re_to_nfa(regex);
+	}
+	else
+	{
+		//the regex matches all lines in file if it is empty
+		regexIsEmpty = true;
+	}
+
+	string line;
 	int numberLine = 0;
-	ifstream file(name);
+	ifstream file(path);
 
 	if (file.is_open())
 	{
-		//cout << "reading file: " << name << endl;
-		while (getline(file, str))
-		{
-			if (required_nfa.actualMatch(0, str))
-			{
-				cout << name << ":" << numberLine << ":" << str << endl;
-			}
-			/*cout << numberLine << " : " << str << " ";
-			cout << "RESULT: " << required_nfa.actualMatch(0, str) << endl;*/
-			++numberLine;
-		}
+		readFile(path, regexMatcher, regexIsEmpty);
 	}
-	else if ((dir = opendir(name.c_str())) != NULL) 
+	else if ((dir = opendir(path.c_str())) != NULL) 
 	{
-		while ((ent = readdir(dir)) != NULL) 
+		while ((directoryEntry = readdir(dir)) != NULL) 
 		{
-			string x = ent->d_name;
-			int i = 0;
-
-			while (name[i] != NULL) ++i;
-			if (name[i - 1] != '\\') name += '\\';
-
+			string fileName = directoryEntry->d_name;
 			
+			//append trailing slash to directory if it is not present
+			int i = 0;
+			while (path[i] != NULL) ++i;
+			if (path[i - 1] != '\\') path += '\\';
 
-			x = name + x;
+			fileName = path + fileName;
 
-			//cout << "\nFILENAME: " << x << endl;
-
-			ifstream file(x);
-			numberLine = 0;
-			while (std::getline(file, str))
-			{
-				/*cout << numberLine << " : " << str << " ";
-				cout << "RESULT: " << required_nfa.actualMatch(0, str) << endl;*/
-
-
-				if (required_nfa.actualMatch(0, str))
-				{
-					cout << x << ":" << numberLine << ":" << str << endl;
-				}
-
-				++numberLine;
-			}
+			readFile(fileName, regexMatcher, regexIsEmpty);
 		}
 		closedir(dir);
 	}
-	else {
-		/* could not open directory */
-		cout << "FAIL" << endl;
+	else 
+	{
+		cerr << "Unable to open " << path << "\n";
+		exit(EXIT_FAILURE);
 	}
 
 	system("pause");
 	return 0;
 }
-
-//int main(int argc, char* argv[])
-//{
-//	validateCmdParams(argc, argv);
-//
-//	cout << argv[1] << endl;
-//	char* fileName = argv[1];
-//
-//	ifstream file(fileName);
-//	string str;
-//
-//	DIR *dir;
-//	struct dirent *ent;
-//	if ((dir = opendir("c:\\src\\")) != NULL) {
-//		/* print all the files and directories within directory */
-//		while ((ent = readdir(dir)) != NULL) {
-//			printf("%s\n", ent->d_name);
-//		}
-//		closedir(dir);
-//	}
-//	else {
-//		/* could not open directory */
-//		perror("");
-//		return EXIT_FAILURE;
-//	}
-//	
-//	int numberLine = 0;
-//	while (std::getline(file, str))
-//	{
-//		cout << str << " : " << numberLine << endl;
-//		++numberLine;
-//	}
-//
-//	//NFA required_nfa;
-//	//required_nfa = required_nfa.re_to_nfa("(a.(b*))");
-//	//cout << "\n\nDISPLAY:";
-//	//required_nfa.display();
-//	//cout << "\n\n";
-//	////required_nfa.match("aaaaaa");
-//	//cout << "\nRESULT: " << required_nfa.actualMatch(0, "ab") << endl;
-//
-//	system("pause");
-//	return 0;
-//}

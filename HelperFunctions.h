@@ -19,6 +19,26 @@
 #include <cstdlib>
 #include <cstdint>
 #include <algorithm>
+#include <string>
+#include "dirent.h"
+#include "RegexParser.h"
+
+void readFile(string fileName, NFA regexMatcher, bool regexIsEmpty)
+{
+	ifstream file(fileName);
+	string line;
+	int numberLine = 0;
+
+	while (std::getline(file, line))
+	{
+		if (regexMatcher.actualMatch(0, line) || regexIsEmpty)
+		{
+			cout << fileName << ":" << numberLine << ":" << line << endl;
+		}
+
+		++numberLine;
+	}
+}
 
 //check if a number is given from console
 void validateCmdParams(int argc, char* argv[])
