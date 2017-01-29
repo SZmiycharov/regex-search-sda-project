@@ -23,9 +23,9 @@
 //check if a number is given from console
 void validateCmdParams(int argc, char* argv[])
 {
-	if (argc != 2)
+	if (argc != 3)
 	{
-		std::cerr << "Usage: " << argv[0] << " <number>" << "\n";
+		std::cerr << "Usage: " << argv[0] << " <FILE or DIRECTORY> <REGEX>" << "\n";
 		system("pause");
 		exit(EXIT_FAILURE);
 	}

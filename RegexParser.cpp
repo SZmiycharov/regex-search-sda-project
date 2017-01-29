@@ -40,7 +40,7 @@ void NFA::display() {
 
 bool NFA::actualMatch(int currentVertex, string remainingWord)
 {
-	cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
+	//cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
 	if (remainingWord == "" && currentVertex == get_final_state()) return true;
 
 	for (int i = 0; i < specialVertexes[currentVertex].arrSize; i++)
