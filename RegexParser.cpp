@@ -38,6 +38,25 @@ void NFA::display() {
 	cout << "\nThe final state is q" << get_final_state() << endl;
 }
 
+bool NFA::actualMatch(int currentVertex, string remainingWord)
+{
+	if (remainingWord == "" && currentVertex == get_final_state()) return true;
+
+	for (int i = 0; i < specialVertexes[currentVertex].arrSize; i++)
+	{
+		if (remainingWord != "" && specialVertexes[currentVertex].trans_symbol[i] == remainingWord[0])
+		{
+			if (actualMatch(specialVertexes[currentVertex].nextVert[i], remainingWord.substr(1, string::npos))) return true;
+		}
+		else if (specialVertexes[currentVertex].trans_symbol[i] == '^')
+		{
+			if (actualMatch(specialVertexes[currentVertex].nextVert[i], remainingWord)) return true;
+		}
+	}
+
+	return false;
+}
+
 bool NFA::match(string str)
 {
 	int strCurIndex = 0;
@@ -163,7 +182,7 @@ NFA NFA::re_to_nfa(string re) {
 
 	for (int i = 0; i < operands.Top().lengthTransitions; i++)
 	{
-		int specVertSize = specialVertexes[operands.Top().transitions[i].vertex_from].arrSize;
+		int specVertSize = operands.Top().specialVertexes[operands.Top().transitions[i].vertex_from].arrSize;
 		int vertexFrom = operands.Top().transitions[i].vertex_from;
 		
 		if (specVertSize <= -800000000)
@@ -173,15 +192,27 @@ NFA NFA::re_to_nfa(string re) {
 
 		if (specialVertexes[vertexFrom].arrSize <= -800000000)
 		{
+			operands.Top().specialVertexes[vertexFrom].arrSize = 0;
 			specialVertexes[vertexFrom].arrSize = 0;
 		}
 
 		cout << operands.Top().transitions[i].vertex_to << " ";
 		cout << specialVertexes[vertexFrom].nextVert[specVertSize] << " ";
+		operands.Top().specialVertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertex_to;
+		operands.Top().specialVertexes[vertexFrom].trans_symbol[specVertSize] = operands.Top().transitions[i].trans_symbol;
+		operands.Top().specialVertexes[vertexFrom].arrSize++;
+
 		specialVertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertex_to;
 		specialVertexes[vertexFrom].trans_symbol[specVertSize] = operands.Top().transitions[i].trans_symbol;
 		specialVertexes[vertexFrom].arrSize++;
 	}
+
+	while (specialVertexes[lengthSpecialVertexes].arrSize > 0)
+	{
+		lengthSpecialVertexes++;
+	}
+
+	operands.Top().lengthSpecialVertexes = lengthSpecialVertexes;
 
 	return operands.Top();
 }

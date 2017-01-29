@@ -33,14 +33,15 @@ public:
 	
 	NFA() {
 		lengthTransitions = 0;
-		sizeVertex = 0;
+		//sizeVertex = 0;
+		lengthSpecialVertexes = 0;
 	}
 
 	bool NFA::match(string str);
 	
 	void display();
+	bool actualMatch(int currentVertex, string remainingWord);
 	
-
 private:
 	NFA or_selection(vector<NFA> selections, int no_of_selections);
 	NFA kleene(NFA a);
@@ -48,6 +49,7 @@ private:
 	int sizeVertex = 0;
 	trans transitions[12];
 	specialVert specialVertexes[12];
+	int lengthSpecialVertexes = 0;
 	int lengthTransitions = 0;
 	int get_final_state();
 	int get_vertex_count();
