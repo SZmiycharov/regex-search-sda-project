@@ -9,8 +9,8 @@
 int main() 
 {
 	NFA required_nfa;
-	required_nfa = required_nfa.re_to_nfa("(a.(b|c|d))");
-	required_nfa.match("ad");
+	required_nfa = required_nfa.re_to_nfa("(a*)");
+	required_nfa.match("aaaaaa");
 
 	system("pause");
 	return 0;

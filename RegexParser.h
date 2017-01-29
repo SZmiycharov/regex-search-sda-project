@@ -17,6 +17,16 @@ struct vert{
 	int id;
 };
 
+struct specialVert{
+	int nextVert[50];
+	char trans_symbol[50];
+	int arrSize;
+
+	specialVert(){
+		arrSize = 0;
+	}
+};
+
 class NFA {
 public:
 	NFA re_to_nfa(string re);
@@ -34,11 +44,10 @@ public:
 private:
 	NFA or_selection(vector<NFA> selections, int no_of_selections);
 	NFA kleene(NFA a);
-	//vector<int> vertex;
 	vert vertex[10];
 	int sizeVertex = 0;
-	//vector<trans> transitions;
 	trans transitions[12];
+	specialVert specialVertexes[12];
 	int lengthTransitions = 0;
 	int get_final_state();
 	int get_vertex_count();

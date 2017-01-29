@@ -88,7 +88,6 @@ bool NFA::match(string str)
 }
 
 NFA NFA::re_to_nfa(string re) {
-
 	NFA test;
 	DynamicStack<char> operators;
 	DynamicStack<NFA> operands;
@@ -159,6 +158,29 @@ NFA NFA::re_to_nfa(string re) {
 				}
 			}
 		}
+	}
+
+
+	for (int i = 0; i < operands.Top().lengthTransitions; i++)
+	{
+		int specVertSize = specialVertexes[operands.Top().transitions[i].vertex_from].arrSize;
+		int vertexFrom = operands.Top().transitions[i].vertex_from;
+		
+		if (specVertSize <= -800000000)
+		{
+			specVertSize = 0;
+		}
+
+		if (specialVertexes[vertexFrom].arrSize <= -800000000)
+		{
+			specialVertexes[vertexFrom].arrSize = 0;
+		}
+
+		cout << operands.Top().transitions[i].vertex_to << " ";
+		cout << specialVertexes[vertexFrom].nextVert[specVertSize] << " ";
+		specialVertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertex_to;
+		specialVertexes[vertexFrom].trans_symbol[specVertSize] = operands.Top().transitions[i].trans_symbol;
+		specialVertexes[vertexFrom].arrSize++;
 	}
 
 	return operands.Top();
