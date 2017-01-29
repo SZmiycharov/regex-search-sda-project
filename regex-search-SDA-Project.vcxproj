@@ -83,10 +83,12 @@
   <ItemGroup>
     <ClInclude Include="DynamicStack.h" />
     <ClInclude Include="HelperFunctions.h" />
+    <ClInclude Include="RegexParser.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="regex-search-SDA-Project.cpp" />
+    <ClCompile Include="RegexParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

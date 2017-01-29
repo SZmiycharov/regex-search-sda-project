@@ -6,7 +6,7 @@ int NFA::get_vertex_count() {
 
 void NFA::set_vertex(int no_vertex) {
 	for (int i = 0; i < no_vertex; i++) {
-		vertex[sizeVertex] = i;
+		vertex[sizeVertex].id = i;
 		sizeVertex++;
 	}
 }
@@ -41,41 +41,45 @@ void NFA::display() {
 bool NFA::match(string str)
 {
 	int strCurIndex = 0;
-	
 	int i = 0;
-	trans cur_trans;
 
-	while (transitions[i].vertex_from > -858993460)
+	while (transitions[i].vertex_from > -1)
 	{
-		transitions[i].indexString = strCurIndex;
+		vertex[transitions[i].vertex_from].indexString = strCurIndex;
 		cout << "q" << transitions[i].vertex_from << " --> q" 
 			<< transitions[i].vertex_to << " : Symbol - " 
 			<< transitions[i].trans_symbol << endl;
 
-		//вървим по transitions
-		//вървим и по string-а
-		//ако е празно минаване и следващия връх не е финален: продължаваме
-		//ако не е празно: check със стринга
-		//	ако е == тогава продължаваме
-		//	ако е != тогава четем до финално състояние и зануляваме текущия индекс на стринга
-		//
-		//ако следващия и по-следващия символ са ^, тогава следва разклоняване и трябва да се запомни индекса на стринга,
-		//за да после да продължаваме търсенето от него
-		//
-
-		//if (transitions[i].trans_symbol == '^') ;
-		//else if (transitions[i].trans_symbol == str[strCurIndex])
-		//{
-
-		//}
-
-		//if (transitions[i].vertex_to == get_final_state())
-		//{
-		//	cout << "YEAH\n";
-		//}
+		if (transitions[i].trans_symbol == '^') 
+		{
+			//do nothing
+		}
+		else if (transitions[i].trans_symbol == str[strCurIndex])
+		{
+			++strCurIndex;
+		}
+		
+		if (transitions[i].vertex_to == get_final_state())
+		{
+			if (str[strCurIndex] == NULL)
+			{
+				cout << "MATCH BRO!!!" << endl;
+				return true;
+			}
+			else
+			{
+				if (transitions[i + 1].vertex_from > -1)
+				{
+					strCurIndex = vertex[transitions[i + 1].vertex_from].indexString;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 
 		++i;
-		++strCurIndex;
 	}
 
 	cout << "\nThe final state is q" << get_final_state() << endl;

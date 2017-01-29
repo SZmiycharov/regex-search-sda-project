@@ -10,7 +10,11 @@ struct trans {
 	int vertex_from;
 	int vertex_to;
 	char trans_symbol;
+};
+
+struct vert{
 	int indexString;
+	int id;
 };
 
 class NFA {
@@ -31,10 +35,10 @@ private:
 	NFA or_selection(vector<NFA> selections, int no_of_selections);
 	NFA kleene(NFA a);
 	//vector<int> vertex;
-	int vertex[50];
+	vert vertex[10];
 	int sizeVertex = 0;
 	//vector<trans> transitions;
-	trans transitions[50];
+	trans transitions[12];
 	int lengthTransitions = 0;
 	int get_final_state();
 	int get_vertex_count();
