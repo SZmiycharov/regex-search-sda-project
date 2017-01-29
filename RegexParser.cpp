@@ -30,16 +30,17 @@ int NFA::get_final_state() {
 
 void NFA::display() {
 	trans new_trans;
-	cout << "\n";
+	//cout << "\n";
 	for (int i = 0; i < lengthTransitions; i++) {
 		new_trans = transitions[i];
-		cout << "q" << new_trans.vertex_from << " --> q" << new_trans.vertex_to << " : Symbol - " << new_trans.trans_symbol << endl;
+		//cout << "q" << new_trans.vertex_from << " --> q" << new_trans.vertex_to << " : Symbol - " << new_trans.trans_symbol << endl;
 	}
-	cout << "\nThe final state is q" << get_final_state() << endl;
+	//cout << "\nThe final state is q" << get_final_state() << endl;
 }
 
 bool NFA::actualMatch(int currentVertex, string remainingWord)
 {
+	cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
 	if (remainingWord == "" && currentVertex == get_final_state()) return true;
 
 	for (int i = 0; i < specialVertexes[currentVertex].arrSize; i++)
@@ -65,9 +66,9 @@ bool NFA::match(string str)
 	while (transitions[i].vertex_from > -1)
 	{
 		vertex[transitions[i].vertex_from].indexString = strCurIndex;
-		cout << "q" << transitions[i].vertex_from << " --> q" 
+		/*cout << "q" << transitions[i].vertex_from << " --> q" 
 			<< transitions[i].vertex_to << " : Symbol - " 
-			<< transitions[i].trans_symbol << endl;
+			<< transitions[i].trans_symbol << endl;*/
 
 		if (transitions[i].trans_symbol == '^') 
 		{
@@ -82,7 +83,7 @@ bool NFA::match(string str)
 		{
 			if (str[strCurIndex] == NULL)
 			{
-				cout << "MATCH BRO!!!" << endl;
+				//cout << "MATCH BRO!!!" << endl;
 				return true;
 			}
 			else
@@ -101,7 +102,7 @@ bool NFA::match(string str)
 		++i;
 	}
 
-	cout << "\nThe final state is q" << get_final_state() << endl;
+	//cout << "\nThe final state is q" << get_final_state() << endl;
 
 	return true;
 }
@@ -196,8 +197,8 @@ NFA NFA::re_to_nfa(string re) {
 			specialVertexes[vertexFrom].arrSize = 0;
 		}
 
-		cout << operands.Top().transitions[i].vertex_to << " ";
-		cout << specialVertexes[vertexFrom].nextVert[specVertSize] << " ";
+		//cout << operands.Top().transitions[i].vertex_to << " ";
+		//cout << specialVertexes[vertexFrom].nextVert[specVertSize] << " ";
 		operands.Top().specialVertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertex_to;
 		operands.Top().specialVertexes[vertexFrom].trans_symbol[specVertSize] = operands.Top().transitions[i].trans_symbol;
 		operands.Top().specialVertexes[vertexFrom].arrSize++;

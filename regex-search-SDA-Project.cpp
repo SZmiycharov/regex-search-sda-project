@@ -11,7 +11,7 @@ int main()
 	NFA required_nfa;
 	required_nfa = required_nfa.re_to_nfa("(a*)");
 	//required_nfa.match("aaaaaa");
-	required_nfa.actualMatch(0, "aaa");
+	cout << required_nfa.actualMatch(0, "aaa");
 
 	system("pause");
 	return 0;
