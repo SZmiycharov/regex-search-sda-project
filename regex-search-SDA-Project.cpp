@@ -31,18 +31,21 @@ int main(int argc, char* argv[])
 	//"(a.b)"
 	required_nfa = required_nfa.re_to_nfa(argv[2]);
 
-	//string name = "D:\\Users\\Desktop\\test\\";
 	string str;
 	int numberLine = 0;
 	ifstream file(name);
 
 	if (file.is_open())
 	{
-		cout << "reading file: " << name << endl;
+		//cout << "reading file: " << name << endl;
 		while (getline(file, str))
 		{
-			cout << numberLine << " : " << str << " ";
-			cout << "\nRESULT: " << required_nfa.actualMatch(0, str) << endl;
+			if (required_nfa.actualMatch(0, str))
+			{
+				cout << name << ":" << numberLine << ":" << str << endl;
+			}
+			/*cout << numberLine << " : " << str << " ";
+			cout << "RESULT: " << required_nfa.actualMatch(0, str) << endl;*/
 			++numberLine;
 		}
 	}
@@ -51,16 +54,30 @@ int main(int argc, char* argv[])
 		while ((ent = readdir(dir)) != NULL) 
 		{
 			string x = ent->d_name;
+			int i = 0;
+
+			while (name[i] != NULL) ++i;
+			if (name[i - 1] != '\\') name += '\\';
+
+			
+
 			x = name + x;
 
-			cout << "\nFILENAME: " << x << endl;
+			//cout << "\nFILENAME: " << x << endl;
 
 			ifstream file(x);
 			numberLine = 0;
 			while (std::getline(file, str))
 			{
-				cout << numberLine << " : " << str << " ";
-				cout << "RESULT: " << required_nfa.actualMatch(0, str) << endl;
+				/*cout << numberLine << " : " << str << " ";
+				cout << "RESULT: " << required_nfa.actualMatch(0, str) << endl;*/
+
+
+				if (required_nfa.actualMatch(0, str))
+				{
+					cout << x << ":" << numberLine << ":" << str << endl;
+				}
+
 				++numberLine;
 			}
 		}
