@@ -2,34 +2,10 @@
 
 int main(int argc, char* argv[])
 {
-//	string str;
-//	cout << "enter text: ";
-//	cin >> str;
-//	cout << "string before: " << str << endl;
-//	replaceSpecialCharactersRegex(str);
-//	cout << "string after: " << str << endl;
-//
-//	system("pause");
-//	return 0;
-//
-//
-//
-//	str = "(\a)***a.b.c.***(\s)***alsdk;lasd***(\s)***a;lsdjas(\s)";
-//	//str.replace(9, 5, "a|b|c|d|f");
-////	cout << "string before: " << str << endl;
-//
-//
-//	replaceSpecialCharactersRegex(str);
-//
-//	//cout << "string now: " << str << endl;
-//
-//	system("pause");
-//	return 0;
-
 	//make sure we have file and regex provided
 	validateCmdParams(argc, argv);
 
-	NFA regexMatcher;
+	RegexParser regexMatcher;
 
 	//needed for getting all directory files
 	DIR *dir;
@@ -39,11 +15,17 @@ int main(int argc, char* argv[])
 	string path = argv[1];
 	string regex = argv[2];
 
+	cout << "regex before replace: " << regex << endl;
+
+	replaceSpecialCharactersRegex(regex);
+
+	cout << "regex after replace: " << regex << endl;
+
 	bool regexIsEmpty = false;
 
 	if (!regex.empty())
 	{
-		regexMatcher = regexMatcher.re_to_nfa(regex);
+		regexMatcher = regexMatcher.re_to_RegexParser(regex);
 	}
 	else
 	{

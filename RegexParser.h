@@ -27,24 +27,24 @@ struct specialVert{
 	}
 };
 
-class NFA {
+class RegexParser {
 public:
-	NFA re_to_nfa(string re);
+	RegexParser re_to_RegexParser(string re);
 	
-	NFA() {
+	RegexParser() {
 		lengthTransitions = 0;
 		//sizeVertex = 0;
 		lengthSpecialVertexes = 0;
 	}
 
-	bool NFA::match(string str);
+	bool RegexParser::match(string str);
 	
 	void display();
 	bool actualMatch(int currentVertex, string remainingWord);
 	
 private:
-	NFA or_selection(vector<NFA> selections, int no_of_selections);
-	NFA kleene(NFA a);
+	RegexParser or_selection(vector<RegexParser> selections, int no_of_selections);
+	RegexParser kleene(RegexParser a);
 	vert vertex[100];
 	int sizeVertex = 0;
 	trans transitions[100];
@@ -56,7 +56,7 @@ private:
 	void set_vertex(int no_vertex);
 	void set_transition(int vertex_from, int vertex_to, char trans_symbol);
 	void set_final_state(int fs);
-	NFA concat(NFA a, NFA b);
+	RegexParser concat(RegexParser a, RegexParser b);
 
 	int final_state;
 

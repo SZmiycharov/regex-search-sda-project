@@ -23,60 +23,49 @@
 #include "dirent.h"
 #include "RegexParser.h"
 
-void replaceSpecialCharactersRegex(string &str)
+void replaceAll(string& str, const string& from, const string& to) 
 {
-	size_t index = 0;
-	while (true) {
-		index = str.find("\\d", index);
-		if (index == std::string::npos) break;
+	if (from.empty()) return;
 
-		str.replace(index, 2, "0|1|2|3|4|5|6|7|8|9");
+	size_t start_pos = 0;
 
-		index += 2;
-	}
-
-	index = 0;
-
-	while (true) {
-		index = str.find("\\s", index);
-		if (index == std::string::npos) break;
-
-		str.replace(index, 2, " |	|\n");
-
-		index += 2;
-	}
-
-	index = 0;
-
-	while (true) {
-		index = str.find("\\e", index);
-		if (index == std::string::npos) break;
-
-		str.replace(index, 2, "");
-
-		index += 2;
-	}
-
-	index = 0;
-
-	while (true) {
-		index = str.find("\\a", index);
-		if (index == std::string::npos) break;
-
-		str.replace(index, 2, "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z");
-
-		index += 2;
+	while ((start_pos = str.find(from, start_pos)) != string::npos) 
+	{
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
 	}
 }
 
-void readFile(string fileName, NFA regexMatcher, bool regexIsEmpty)
+void replaceSpecialCharactersRegex(string &str)
+{
+	//transform regex to lowercase
+	transform(str.begin(), str.end(), str.begin(), tolower);
+
+	//replace all double backslashes with single ones
+	replaceAll(str, "\\\\", "\\");
+
+	//\d replaces all digits
+	replaceAll(str, "(\\d)", "(0|1|2|3|4|5|6|7|8|9)");
+
+	// \s replaces empty spaces
+	replaceAll(str, "(\\s)", "( |	|\n)");
+
+	//\e replaces the empty word
+	replaceAll(str, ".(\\e)", "");
+
+	//\d replaces all leters from alphabet
+	replaceAll(str, "(\\a)", "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)");
+}
+
+void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty)
 {
 	ifstream file(fileName);
 	string line;
-	int numberLine = 0;
+	int numberLine = 1;
 
 	while (std::getline(file, line))
 	{
+		transform(line.begin(), line.end(), line.begin(), tolower);
 		if (regexMatcher.actualMatch(0, line) || regexIsEmpty)
 		{
 			cout << fileName << ":" << numberLine << ":" << line << endl;

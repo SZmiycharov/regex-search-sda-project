@@ -1,17 +1,17 @@
 #include "RegexParser.h"
 
-int NFA::get_vertex_count() {
+int RegexParser::get_vertex_count() {
 	return sizeVertex;
 }
 
-void NFA::set_vertex(int no_vertex) {
+void RegexParser::set_vertex(int no_vertex) {
 	for (int i = 0; i < no_vertex; i++) {
 		vertex[sizeVertex].id = i;
 		sizeVertex++;
 	}
 }
 
-void NFA::set_transition(int vertex_from, int vertex_to, char trans_symbol) {
+void RegexParser::set_transition(int vertex_from, int vertex_to, char trans_symbol) {
 	trans new_trans;
 	new_trans.vertex_from = vertex_from;
 	new_trans.vertex_to = vertex_to;
@@ -20,15 +20,15 @@ void NFA::set_transition(int vertex_from, int vertex_to, char trans_symbol) {
 	lengthTransitions++;
 }
 
-void NFA::set_final_state(int fs) {
+void RegexParser::set_final_state(int fs) {
 	final_state = fs;
 }
 
-int NFA::get_final_state() {
+int RegexParser::get_final_state() {
 	return final_state;
 }
 
-void NFA::display() {
+void RegexParser::display() {
 	trans new_trans;
 	//cout << "\n";
 	for (int i = 0; i < lengthTransitions; i++) {
@@ -38,7 +38,7 @@ void NFA::display() {
 	//cout << "\nThe final state is q" << get_final_state() << endl;
 }
 
-bool NFA::actualMatch(int currentVertex, string remainingWord)
+bool RegexParser::actualMatch(int currentVertex, string remainingWord)
 {
 	//cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
 	if (remainingWord == "" && currentVertex == get_final_state()) return true;
@@ -58,7 +58,7 @@ bool NFA::actualMatch(int currentVertex, string remainingWord)
 	return false;
 }
 
-bool NFA::match(string str)
+bool RegexParser::match(string str)
 {
 	int strCurIndex = 0;
 	int i = 0;
@@ -107,19 +107,19 @@ bool NFA::match(string str)
 	return true;
 }
 
-NFA NFA::re_to_nfa(string re) {
-	NFA test;
+RegexParser RegexParser::re_to_RegexParser(string re) {
+	RegexParser test;
 	DynamicStack<char> operators;
-	DynamicStack<NFA> operands;
+	DynamicStack<RegexParser> operands;
 	char op_sym;
 	int op_count;
 	char cur_sym;
-	NFA *new_sym;
+	RegexParser *new_sym;
 
 	for (string::iterator it = re.begin(); it != re.end(); ++it) {
 		cur_sym = *it;
 		if (cur_sym != '(' && cur_sym != ')' && cur_sym != '*' && cur_sym != '|' && cur_sym != '.') {
-			new_sym = new NFA();
+			new_sym = new RegexParser();
 			new_sym->set_vertex(2);
 			new_sym->set_transition(0, 1, cur_sym);
 			new_sym->set_final_state(1);
@@ -128,7 +128,7 @@ NFA NFA::re_to_nfa(string re) {
 		}
 		else {
 			if (cur_sym == '*') {
-				NFA star_sym = operands.Top();
+				RegexParser star_sym = operands.Top();
 				operands.Pop();
 				operands.Push(kleene(star_sym));
 			}
@@ -151,9 +151,9 @@ NFA NFA::re_to_nfa(string re) {
 					op_count++;
 				} while (operators.Top() != '(');
 				operators.Pop();
-				NFA op1;
-				NFA op2;
-				vector<NFA> selections;
+				RegexParser op1;
+				RegexParser op2;
+				vector<RegexParser> selections;
 				if (op_sym == '.') {
 					for (int i = 0; i < op_count; i++) {
 						op2 = operands.Top();
@@ -164,7 +164,7 @@ NFA NFA::re_to_nfa(string re) {
 					}
 				}
 				else if (op_sym == '|'){
-					selections.assign(op_count + 1, NFA());
+					selections.assign(op_count + 1, RegexParser());
 					int tracker = op_count;
 					for (int i = 0; i < op_count + 1; i++) {
 						selections.at(tracker) = operands.Top();
@@ -218,8 +218,8 @@ NFA NFA::re_to_nfa(string re) {
 	return operands.Top();
 }
 
-NFA NFA::concat(NFA a, NFA b) {
-	NFA result;
+RegexParser RegexParser::concat(RegexParser a, RegexParser b) {
+	RegexParser result;
 	result.set_vertex(a.get_vertex_count() + b.get_vertex_count());
 	int i;
 	trans new_trans;
@@ -241,8 +241,8 @@ NFA NFA::concat(NFA a, NFA b) {
 	return result;
 }
 
-NFA NFA::kleene(NFA a) {
-	NFA result;
+RegexParser RegexParser::kleene(RegexParser a) {
+	RegexParser result;
 	int i;
 	trans new_trans;
 
@@ -264,11 +264,11 @@ NFA NFA::kleene(NFA a) {
 	return result;
 }
 
-NFA NFA::or_selection(vector<NFA> selections, int no_of_selections) {
-	NFA result;
+RegexParser RegexParser::or_selection(vector<RegexParser> selections, int no_of_selections) {
+	RegexParser result;
 	int vertex_count = 2;
 	int i, j;
-	NFA med;
+	RegexParser med;
 	trans new_trans;
 
 	for (i = 0; i < no_of_selections; i++) {
