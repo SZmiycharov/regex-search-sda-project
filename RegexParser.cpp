@@ -2,24 +2,9 @@
 
 RegexParser::RegexParser() 
 {
-	Init();
+	lengthTransitions = 0;
+	lengthSpecialVertexes = 0;
 }
-
-//RegexParser::RegexParser(RegexParser const & obj)
-//{
-//	Init();
-//	CopyFrom(obj);
-//}
-//
-//RegexParser& RegexParser::operator=(RegexParser const & obj)
-//{
-//	if (this != &obj)
-//	{
-//		CopyFrom(obj);
-//	}
-//
-//	return *this;
-//}
 
 RegexParser RegexParser::buildNFA(string re)
 {
@@ -36,9 +21,9 @@ RegexParser RegexParser::buildNFA(string re)
 		cur_sym = *it;
 		if (cur_sym != '(' && cur_sym != ')' && cur_sym != '*' && cur_sym != '|' && cur_sym != '.') {
 			new_sym = new RegexParser();
-			new_sym->set_vertex(2);
-			new_sym->set_transition(0, 1, cur_sym);
-			new_sym->set_final_state(1);
+			new_sym->setVertex(2);
+			new_sym->setTransition(0, 1, cur_sym);
+			new_sym->setFinalState(1);
 			operands.Push(*new_sym);
 			delete new_sym;
 		}
@@ -47,7 +32,7 @@ RegexParser RegexParser::buildNFA(string re)
 			{
 				RegexParser star_sym = operands.Top();
 				operands.Pop();
-				operands.Push(kleene(star_sym));
+				operands.Push(iteration(star_sym));
 			}
 			else if (cur_sym == '.')
 			{
@@ -83,7 +68,7 @@ RegexParser RegexParser::buildNFA(string re)
 						operands.Pop();
 						op1 = operands.Top();
 						operands.Pop();
-						operands.Push(concat(op1, op2));
+						operands.Push(concatenation(op1, op2));
 					}
 				}
 				else if (op_sym == '|')
@@ -96,7 +81,7 @@ RegexParser RegexParser::buildNFA(string re)
 						tracker--;
 						operands.Pop();
 					}
-					operands.Push(or_selection(selections, op_count + 1));
+					operands.Push(orSelection(selections, op_count + 1));
 				}
 				else
 				{
@@ -147,7 +132,7 @@ RegexParser RegexParser::buildNFA(string re)
 bool RegexParser::match(int currentVertex, string remainingWord)
 {
 	//cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
-	if (remainingWord == "" && currentVertex == get_final_state()) return true;
+	if (remainingWord == "" && currentVertex == getFinalState()) return true;
 
 	for (int i = 0; i < specialVertexes[currentVertex].arrSize; i++)
 	{
@@ -173,36 +158,36 @@ void RegexParser::display()
 		newTransition = transitions[i];
 		//cout << "q" << newTransition.vertex_from << " --> q" << newTransition.vertex_to << " : Symbol - " << newTransition.transitionSymbol << endl;
 	}
-	//cout << "\nThe final state is q" << get_final_state() << endl;
+	//cout << "\nThe final state is q" << getFinalState() << endl;
 }
 
-RegexParser RegexParser::concat(RegexParser a, RegexParser b)
+RegexParser RegexParser::concatenation(RegexParser a, RegexParser b)
 {
 	RegexParser result;
-	result.set_vertex(a.get_vertex_count() + b.get_vertex_count());
+	result.setVertex(a.getVertexCount() + b.getVertexCount());
 	int i;
 	transition newTransition;
 
 	for (i = 0; i < a.lengthTransitions; i++)
 	{
 		newTransition = a.transitions[i];
-		result.set_transition(newTransition.vertex_from, newTransition.vertex_to, newTransition.transitionSymbol);
+		result.setTransition(newTransition.vertex_from, newTransition.vertex_to, newTransition.transitionSymbol);
 	}
 
-	result.set_transition(a.get_final_state(), a.get_vertex_count(), '^');
+	result.setTransition(a.getFinalState(), a.getVertexCount(), '^');
 
 	for (i = 0; i < b.lengthTransitions; i++)
 	{
 		newTransition = b.transitions[i];
-		result.set_transition(newTransition.vertex_from + a.get_vertex_count(), newTransition.vertex_to + a.get_vertex_count(), newTransition.transitionSymbol);
+		result.setTransition(newTransition.vertex_from + a.getVertexCount(), newTransition.vertex_to + a.getVertexCount(), newTransition.transitionSymbol);
 	}
 
-	result.set_final_state(a.get_vertex_count() + b.get_vertex_count() - 1);
+	result.setFinalState(a.getVertexCount() + b.getVertexCount() - 1);
 
 	return result;
 }
 
-RegexParser RegexParser::or_selection(vector<RegexParser> selections, int no_of_selections)
+RegexParser RegexParser::orSelection(vector<RegexParser> selections, int no_of_selections)
 {
 	RegexParser result;
 	int vertex_count = 2;
@@ -211,79 +196,59 @@ RegexParser RegexParser::or_selection(vector<RegexParser> selections, int no_of_
 	transition newTransition;
 
 	for (i = 0; i < no_of_selections; i++) {
-		vertex_count += selections.at(i).get_vertex_count();
+		vertex_count += selections.at(i).getVertexCount();
 	}
 
-	result.set_vertex(vertex_count);
+	result.setVertex(vertex_count);
 
 	int adder_track = 1;
 
 	for (i = 0; i < no_of_selections; i++)
 	{
-		result.set_transition(0, adder_track, '^');
+		result.setTransition(0, adder_track, '^');
 		med = selections.at(i);
 		for (j = 0; j < med.lengthTransitions; j++)
 		{
 			newTransition = med.transitions[j];
 			lengthTransitions++;
-			result.set_transition(newTransition.vertex_from + adder_track, newTransition.vertex_to + adder_track, newTransition.transitionSymbol);
+			result.setTransition(newTransition.vertex_from + adder_track, newTransition.vertex_to + adder_track, newTransition.transitionSymbol);
 		}
-		adder_track += med.get_vertex_count();
+		adder_track += med.getVertexCount();
 
-		result.set_transition(adder_track - 1, vertex_count - 1, '^');
+		result.setTransition(adder_track - 1, vertex_count - 1, '^');
 	}
 
-	result.set_final_state(vertex_count - 1);
+	result.setFinalState(vertex_count - 1);
 
 	return result;
 }
 
-RegexParser RegexParser::kleene(RegexParser a) 
+RegexParser RegexParser::iteration(RegexParser a) 
 {
 	RegexParser result;
 	int i;
 	transition newTransition;
 
-	result.set_vertex(a.get_vertex_count() + 2);
+	result.setVertex(a.getVertexCount() + 2);
 
-	result.set_transition(0, 1, '^');
+	result.setTransition(0, 1, '^');
 
 	for (i = 0; i < a.lengthTransitions; i++)
 	{
 		newTransition = a.transitions[i];
-		result.set_transition(newTransition.vertex_from + 1, newTransition.vertex_to + 1, newTransition.transitionSymbol);
+		result.setTransition(newTransition.vertex_from + 1, newTransition.vertex_to + 1, newTransition.transitionSymbol);
 	}
 
-	result.set_transition(a.get_vertex_count(), a.get_vertex_count() + 1, '^');
-	result.set_transition(a.get_vertex_count(), 1, '^');
-	result.set_transition(0, a.get_vertex_count() + 1, '^');
+	result.setTransition(a.getVertexCount(), a.getVertexCount() + 1, '^');
+	result.setTransition(a.getVertexCount(), 1, '^');
+	result.setTransition(0, a.getVertexCount() + 1, '^');
 
-	result.set_final_state(a.get_vertex_count() + 1);
+	result.setFinalState(a.getVertexCount() + 1);
 
 	return result;
 }
 
-void RegexParser::Init()
-{
-	lengthTransitions = 0;
-	lengthSpecialVertexes = 0;
-}
-
-//void RegexParser::CopyFrom(RegexParser const& obj)
-//{
-//	if (obj.lengthSpecialVertexes == 0) return;
-//
-//	sizeVertex = obj.sizeVertex;
-//	lengthSpecialVertexes = obj.lengthSpecialVertexes;
-//	lengthTransitions = obj.lengthTransitions;
-//	finalState = obj.finalState;
-//
-//	std::copy(std::begin(obj.vertex), std::end(obj.vertex), std::begin(vertex));
-//	std::copy(std::begin(obj.transitions), std::end(obj.transitions), std::begin(transitions));
-//	std::copy(std::begin(obj.specialVertexes), std::end(obj.specialVertexes), std::begin(specialVertexes));
-//}
-
-void RegexParser::set_vertex(int numVertex)
+void RegexParser::setVertex(int numVertex)
 {
 	for (int i = 0; i < numVertex; i++)
 	{
@@ -292,7 +257,7 @@ void RegexParser::set_vertex(int numVertex)
 	}
 }
 
-void RegexParser::set_transition(int vertex_from, int vertex_to, char transitionSymbol)
+void RegexParser::setTransition(int vertex_from, int vertex_to, char transitionSymbol)
 {
 	transition newTransition;
 	newTransition.vertex_from = vertex_from;
@@ -302,71 +267,17 @@ void RegexParser::set_transition(int vertex_from, int vertex_to, char transition
 	lengthTransitions++;
 }
 
-void RegexParser::set_final_state(int fs)
+void RegexParser::setFinalState(int fs)
 {
 	finalState = fs;
 }
 
-int RegexParser::get_vertex_count() 
+int RegexParser::getVertexCount() 
 {
 	return sizeVertex;
 }
 
-int RegexParser::get_final_state() 
+int RegexParser::getFinalState() 
 {
 	return finalState;
 }
-
-//bool RegexParser::match(string str)
-//{
-//	int strCurIndex = 0;
-//	int i = 0;
-//
-//	while (transitions[i].vertex_from > -1)
-//	{
-//		vertex[transitions[i].vertex_from].indexString = strCurIndex;
-//		/*cout << "q" << transitions[i].vertex_from << " --> q" 
-//			<< transitions[i].vertex_to << " : Symbol - " 
-//			<< transitions[i].transitionSymbol << endl;*/
-//
-//		if (transitions[i].transitionSymbol == '^') 
-//		{
-//			//do nothing
-//		}
-//		else if (transitions[i].transitionSymbol == str[strCurIndex])
-//		{
-//			++strCurIndex;
-//		}
-//		
-//		if (transitions[i].vertex_to == get_final_state())
-//		{
-//			if (str[strCurIndex] == NULL)
-//			{
-//				//cout << "MATCH BRO!!!" << endl;
-//				return true;
-//			}
-//			else
-//			{
-//				if (transitions[i + 1].vertex_from > -1)
-//				{
-//					strCurIndex = vertex[transitions[i + 1].vertex_from].indexString;
-//				}
-//				else
-//				{
-//					return false;
-//				}
-//			}
-//		}
-//
-//		++i;
-//	}
-//
-//	//cout << "\nThe final state is q" << get_final_state() << endl;
-//
-//	return true;
-//}
-
-
-
-
-

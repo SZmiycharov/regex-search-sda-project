@@ -23,6 +23,20 @@
 #include "dirent.h"
 #include "RegexParser.h"
 
+string constructFileName(dirent *directoryEntry, string path)
+{
+	string fileName = directoryEntry->d_name;
+
+	//append trailing slash to directory if it is not present
+	int i = 0;
+	while (path[i] != NULL) ++i;
+	if (path[i - 1] != '\\') path += '\\';
+
+	fileName = path + fileName;
+
+	return fileName;
+}
+
 void replaceAll(string& str, const string& from, const string& to) 
 {
 	if (from.empty()) return;

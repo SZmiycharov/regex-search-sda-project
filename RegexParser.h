@@ -33,15 +33,12 @@ class RegexParser
 {
 public:
 	RegexParser();
-	//~RegexParser();
-	//RegexParser(RegexParser const & obj);
-	//RegexParser& operator=(RegexParser const & obj);
+	/*we do not need the BIG 4 as nothing in our class is dynamically allocated (on the heap)*/
 
 	RegexParser buildNFA(string re);
 	bool match(int currentVertex, string remainingWord);
 	void display();
 
-	//bool RegexParser::match(string str);
 private:
 	vert vertex[100];
 	transition transitions[100];
@@ -51,17 +48,16 @@ private:
 	int lengthTransitions;
 	int finalState;
 
-	RegexParser concat(RegexParser a, RegexParser b);
-	RegexParser or_selection(vector<RegexParser> selections, int no_of_selections);
-	RegexParser kleene(RegexParser a);
+	RegexParser concatenation(RegexParser a, RegexParser b);
+	RegexParser orSelection(vector<RegexParser> selections, int no_of_selections);
+	RegexParser iteration(RegexParser a);
 
 	void Init();
-	//void CopyFrom(RegexParser const& obj);
-	void set_vertex(int numVertex);
-	void set_transition(int vertex_from, int vertex_to, char transitionSymbol);
-	void set_final_state(int fs);
-	int get_vertex_count();
-	int get_final_state();
+	void setVertex(int numVertex);
+	void setTransition(int vertex_from, int vertex_to, char transitionSymbol);
+	void setFinalState(int fs);
+	int getVertexCount();
+	int getFinalState();
 };
 
 
