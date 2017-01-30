@@ -23,6 +23,52 @@
 #include "dirent.h"
 #include "RegexParser.h"
 
+void replaceSpecialCharactersRegex(string &str)
+{
+	size_t index = 0;
+	while (true) {
+		index = str.find("\\d", index);
+		if (index == std::string::npos) break;
+
+		str.replace(index, 2, "0|1|2|3|4|5|6|7|8|9");
+
+		index += 2;
+	}
+
+	index = 0;
+
+	while (true) {
+		index = str.find("\\s", index);
+		if (index == std::string::npos) break;
+
+		str.replace(index, 2, " |	|\n");
+
+		index += 2;
+	}
+
+	index = 0;
+
+	while (true) {
+		index = str.find("\\e", index);
+		if (index == std::string::npos) break;
+
+		str.replace(index, 2, "");
+
+		index += 2;
+	}
+
+	index = 0;
+
+	while (true) {
+		index = str.find("\\a", index);
+		if (index == std::string::npos) break;
+
+		str.replace(index, 2, "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z");
+
+		index += 2;
+	}
+}
+
 void readFile(string fileName, NFA regexMatcher, bool regexIsEmpty)
 {
 	ifstream file(fileName);

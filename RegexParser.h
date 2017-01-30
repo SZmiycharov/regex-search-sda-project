@@ -45,12 +45,12 @@ public:
 private:
 	NFA or_selection(vector<NFA> selections, int no_of_selections);
 	NFA kleene(NFA a);
-	vert vertex[10];
+	vert vertex[100];
 	int sizeVertex = 0;
-	trans transitions[12];
-	specialVert specialVertexes[12];
-	int lengthSpecialVertexes = 0;
-	int lengthTransitions = 0;
+	trans transitions[100];
+	specialVert specialVertexes[100];
+	int lengthSpecialVertexes;
+	int lengthTransitions;
 	int get_final_state();
 	int get_vertex_count();
 	void set_vertex(int no_vertex);
