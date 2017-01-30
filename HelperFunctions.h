@@ -36,7 +36,7 @@ void replaceAll(string& str, const string& from, const string& to)
 	}
 }
 
-void replaceSpecialCharactersRegex(string &str)
+void preprocessRegex(string &str)
 {
 	//transform regex to lowercase
 	transform(str.begin(), str.end(), str.begin(), tolower);
@@ -66,7 +66,7 @@ void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty)
 	while (std::getline(file, line))
 	{
 		transform(line.begin(), line.end(), line.begin(), tolower);
-		if (regexMatcher.actualMatch(0, line) || regexIsEmpty)
+		if (regexMatcher.match(0, line) || regexIsEmpty)
 		{
 			cout << fileName << ":" << numberLine << ":" << line << endl;
 		}

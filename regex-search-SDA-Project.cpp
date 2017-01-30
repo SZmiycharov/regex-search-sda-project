@@ -3,7 +3,7 @@
 int main(int argc, char* argv[])
 {
 	//make sure we have file and regex provided
-	validateCmdParams(argc, argv);
+	//validateCmdParams(argc, argv);
 
 	RegexParser regexMatcher;
 
@@ -12,12 +12,12 @@ int main(int argc, char* argv[])
 	struct dirent *directoryEntry;
 
 	//argv 1 is the given file name or path from console
-	string path = argv[1];
-	string regex = argv[2];
+	string path = "";
+	string regex = "(a*)";
 
 	cout << "regex before replace: " << regex << endl;
 
-	replaceSpecialCharactersRegex(regex);
+	preprocessRegex(regex);
 
 	cout << "regex after replace: " << regex << endl;
 
@@ -25,13 +25,19 @@ int main(int argc, char* argv[])
 
 	if (!regex.empty())
 	{
-		regexMatcher = regexMatcher.re_to_RegexParser(regex);
+		regexMatcher = regexMatcher.buildNFA(regex);
 	}
 	else
 	{
 		//the regex matches all lines in file if it is empty
 		regexIsEmpty = true;
 	}
+
+	RegexParser test = regexMatcher;
+
+	cout << "yolo";
+	system("pause");
+	return 0;
 
 	string line;
 	int numberLine = 0;
