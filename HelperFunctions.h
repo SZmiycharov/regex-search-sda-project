@@ -23,6 +23,19 @@
 #include "dirent.h"
 #include "RegexParser.h"
 
+void validateRegex(string re)
+{
+	for (int i = 0; i < re.size(); i++)
+	{
+		if (int(re[i]) < 33 || int(re[i]) > 126)
+		{
+			std::cerr << "Unallowed char " << re[i] << " used in regex!\n";
+			system("pause");
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
 string constructFileName(dirent *directoryEntry, string path)
 {
 	string fileName = directoryEntry->d_name;
@@ -71,7 +84,7 @@ void preprocessRegex(string &str)
 	replaceAll(str, "(\\a)", "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)");
 }
 
-void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty)
+void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty)
 {
 	ifstream file(fileName);
 	string line;
@@ -80,7 +93,7 @@ void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty)
 	while (std::getline(file, line))
 	{
 		transform(line.begin(), line.end(), line.begin(), tolower);
-		if (regexMatcher.match(0, line) || regexIsEmpty)
+		if (regexMatcher->match(0, line) || regexIsEmpty)
 		{
 			cout << fileName << ":" << numberLine << ":" << line << endl;
 		}

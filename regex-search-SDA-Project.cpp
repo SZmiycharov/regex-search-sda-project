@@ -1,9 +1,30 @@
+/**
+*
+* Solution to homework task
+* Data Structures Course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2016/2017
+*
+* @author Stanislav Zmiycharov
+* @idnumber 61883
+* @task 0
+* @compiler VC
+*
+*/
+
 #include "HelperFunctions.h"
 
 int main(int argc, char* argv[])
 {
+	/*RegexParser test;
+	test = test.buildNFA("(F.I.N.(\a))");
+
+	cout << "fail" << endl;
+	system("pause");
+	return 0;*/
+
 	//make sure we have file and regex provided
-	validateCmdParams(argc, argv);
+	//validateCmdParams(argc, argv);
 
 	RegexParser regexMatcher;
 
@@ -12,8 +33,9 @@ int main(int argc, char* argv[])
 	struct dirent *directoryEntry;
 
 	//argv 1 is the given file name or path from console
-	string path = argv[1];
-	string regex = argv[2];
+	string path = "D:\\Users\\Desktop\\test";
+	string regex = "(a|b)";
+	validateRegex(regex);
 
 	cout << "regex before replace: " << regex << endl;
 
@@ -39,7 +61,7 @@ int main(int argc, char* argv[])
 
 	if (file.is_open())
 	{
-		readFile(path, regexMatcher, regexIsEmpty);
+		readFile(path, &regexMatcher, regexIsEmpty);
 	}
 	else if ((dir = opendir(path.c_str())) != NULL) 
 	{
@@ -47,7 +69,7 @@ int main(int argc, char* argv[])
 		{
 			string fileName = constructFileName(directoryEntry, path);
 
-			readFile(fileName, regexMatcher, regexIsEmpty);
+			readFile(fileName, &regexMatcher, regexIsEmpty);
 		}
 		closedir(dir);
 	}

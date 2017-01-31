@@ -85,6 +85,7 @@
     <ClInclude Include="HelperFunctions.h" />
     <ClInclude Include="RegexParser.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="regex-search-SDA-Project.cpp" />

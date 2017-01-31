@@ -1,6 +1,6 @@
 #include "RegexParser.h"
 
-RegexParser::RegexParser() 
+RegexParser::RegexParser()
 {
 	lengthTransitions = 0;
 	lengthSpecialVertexes = 0;
@@ -59,7 +59,7 @@ RegexParser RegexParser::buildNFA(string re)
 				operators.Pop();
 				RegexParser op1;
 				RegexParser op2;
-				vector<RegexParser> selections;
+				RegexParser selections[10];
 				if (op_sym == '.')
 				{
 					for (int i = 0; i < op_count; i++)
@@ -73,11 +73,14 @@ RegexParser RegexParser::buildNFA(string re)
 				}
 				else if (op_sym == '|')
 				{
-					selections.assign(op_count + 1, RegexParser());
+					for (int i = 0; i <= op_count + 1; ++i)
+					{
+						selections[i] = RegexParser();
+					}
 					int tracker = op_count;
 					for (int i = 0; i < op_count + 1; i++)
 					{
-						selections.at(tracker) = operands.Top();
+						selections[tracker] = operands.Top();
 						tracker--;
 						operands.Pop();
 					}
@@ -187,7 +190,7 @@ RegexParser RegexParser::concatenation(RegexParser a, RegexParser b)
 	return result;
 }
 
-RegexParser RegexParser::orSelection(vector<RegexParser> selections, int no_of_selections)
+RegexParser RegexParser::orSelection(RegexParser selections[10], int no_of_selections)
 {
 	RegexParser result;
 	int vertex_count = 2;
@@ -196,7 +199,7 @@ RegexParser RegexParser::orSelection(vector<RegexParser> selections, int no_of_s
 	transition newTransition;
 
 	for (i = 0; i < no_of_selections; i++) {
-		vertex_count += selections.at(i).getVertexCount();
+		vertex_count += selections[i].getVertexCount();
 	}
 
 	result.setVertex(vertex_count);
@@ -206,7 +209,7 @@ RegexParser RegexParser::orSelection(vector<RegexParser> selections, int no_of_s
 	for (i = 0; i < no_of_selections; i++)
 	{
 		result.setTransition(0, adder_track, '^');
-		med = selections.at(i);
+		med = selections[i];
 		for (j = 0; j < med.lengthTransitions; j++)
 		{
 			newTransition = med.transitions[j];
@@ -223,7 +226,7 @@ RegexParser RegexParser::orSelection(vector<RegexParser> selections, int no_of_s
 	return result;
 }
 
-RegexParser RegexParser::iteration(RegexParser a) 
+RegexParser RegexParser::iteration(RegexParser a)
 {
 	RegexParser result;
 	int i;
@@ -272,12 +275,12 @@ void RegexParser::setFinalState(int fs)
 	finalState = fs;
 }
 
-int RegexParser::getVertexCount() 
+int RegexParser::getVertexCount()
 {
 	return sizeVertex;
 }
 
-int RegexParser::getFinalState() 
+int RegexParser::getFinalState()
 {
 	return finalState;
 }

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct transition 
+struct transition
 {
 	int vertex_from;
 	int vertex_to;
@@ -26,10 +26,10 @@ struct specialVert
 	char transitionSymbol[50];
 	int arrSize;
 
-	specialVert(): arrSize(0){}
+	specialVert() : arrSize(0){}
 };
 
-class RegexParser 
+class RegexParser
 {
 public:
 	RegexParser();
@@ -49,7 +49,7 @@ private:
 	int finalState;
 
 	RegexParser concatenation(RegexParser a, RegexParser b);
-	RegexParser orSelection(vector<RegexParser> selections, int no_of_selections);
+	RegexParser orSelection(RegexParser selections[10], int no_of_selections);
 	RegexParser iteration(RegexParser a);
 
 	void Init();
@@ -59,7 +59,6 @@ private:
 	int getVertexCount();
 	int getFinalState();
 };
-
 
 
 
