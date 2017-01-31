@@ -6,7 +6,7 @@ RegexParser::RegexParser()
 	lengthSpecialVertexes = 0;
 }
 
-RegexParser RegexParser::buildNFA(string re)
+RegexParser RegexParser::buildNFA(string regex)
 {
 	RegexParser test;
 	DynamicStack<char> operators;
@@ -16,9 +16,9 @@ RegexParser RegexParser::buildNFA(string re)
 	char cur_sym;
 	RegexParser *new_sym;
 
-	for (string::iterator it = re.begin(); it != re.end(); ++it)
+	for (int i = 0; i < regex.size(); i++)
 	{
-		cur_sym = *it;
+		cur_sym = regex[i];
 		if (cur_sym != '(' && cur_sym != ')' && cur_sym != '*' && cur_sym != '|' && cur_sym != '.') {
 			new_sym = new RegexParser();
 			new_sym->setVertex(2);
@@ -255,7 +255,9 @@ void RegexParser::setVertex(int numVertex)
 {
 	for (int i = 0; i < numVertex; i++)
 	{
-		vertex[sizeVertex].id = i;
+		vert hlp;
+		hlp.id = i;
+		vertex.push_back(hlp);
 		sizeVertex++;
 	}
 }

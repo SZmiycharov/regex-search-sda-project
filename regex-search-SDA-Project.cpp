@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 	//argv 1 is the given file name or path from console
 	string path = "D:\\Users\\Desktop\\test";
-	string regex = "(a|b)";
+	string regex = "(a.b)";
 	validateRegex(regex);
 
 	cout << "regex before replace: " << regex << endl;
