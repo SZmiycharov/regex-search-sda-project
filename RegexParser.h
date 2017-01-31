@@ -10,8 +10,8 @@ using namespace std;
 
 struct transition
 {
-	int vertex_from;
-	int vertex_to;
+	int vertexFrom;
+	int vertexTo;
 	char transitionSymbol;
 };
 
@@ -42,8 +42,8 @@ public:
 
 private:
 	Vector<vert> vertex;
-	//vert vertex[100];
 	transition transitions[100];
+	//Vector<specialVert> specialVertexes;
 	specialVert specialVertexes[100];
 	int sizeVertex = 0;
 	int lengthSpecialVertexes;
@@ -51,13 +51,13 @@ private:
 	int finalState;
 
 	RegexParser concatenation(RegexParser a, RegexParser b);
-	RegexParser orSelection(RegexParser selections[10], int no_of_selections);
-	RegexParser iteration(RegexParser a);
+	RegexParser orSelection(RegexParser selections[10], int numbSelections);
+	RegexParser iteration(RegexParser curNFA);
 
 	void Init();
 	void setVertex(int numVertex);
-	void setTransition(int vertex_from, int vertex_to, char transitionSymbol);
-	void setFinalState(int fs);
+	void setTransition(int vertexFrom, int vertexTo, char transitionSymbol);
+	void setFinalState(int finState);
 	int getVertexCount();
 	int getFinalState();
 };

@@ -35,6 +35,7 @@ public:
 	int capacity();
 	bool empty();
 	void clear();
+	void changeByIndex(int index, T value);
 
 	void shrinkToSize();
 	void substitute(Vector<T>&);
@@ -274,6 +275,14 @@ void Vector<T>::clear()
 	m_capacity = 4;
 	m_size = 0;
 	vectArr = new T[4];
+}
+
+template<typename T>
+void Vector<T>::changeByIndex(int index, T value)
+{
+	if (index > size) return;
+
+	vectArr[index] = value;
 }
 
 template<typename T>
