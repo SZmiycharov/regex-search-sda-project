@@ -8,32 +8,15 @@
 
 using namespace std;
 
-struct transition
-{
-	int vertexFrom;
-	int vertexTo;
-	char transitionSymbol;
-};
 
-struct vert
-{
-	int indexString;
-	int id;
-};
-
-struct specialVert
-{
-	int nextVert[50];
-	char transitionSymbol[50];
-	int arrSize;
-
-	specialVert() : arrSize(0){}
-};
 
 class RegexParser
 {
 public:
 	RegexParser();
+	~RegexParser();
+	RegexParser(RegexParser const & obj);
+	RegexParser& operator=(RegexParser const & obj);
 	/*we do not need the BIG 4 as nothing in our class is dynamically allocated (on the heap)*/
 
 	RegexParser buildNFA(string regex);
@@ -41,10 +24,33 @@ public:
 	void display();
 
 private:
+	struct transition
+	{
+		int vertexFrom;
+		int vertexTo;
+		char transitionSymbol;
+	};
+
+	struct vert
+	{
+		int indexString;
+		int id;
+	};
+
+	struct specialVert
+	{
+		int nextVert[50];
+		char transitionSymbol[50];
+		int arrSize;
+
+		specialVert() : arrSize(0){}
+	};
+
 	Vector<vert> vertex;
-	transition transitions[100];
-	//Vector<specialVert> specialVertexes;
-	specialVert specialVertexes[100];
+	Vector<transition> transitions;
+	//transition transitions[100];
+	Vector<specialVert> specialVertexes;
+	//specialVert specialVertexes[100];
 	int sizeVertex = 0;
 	int lengthSpecialVertexes;
 	int lengthTransitions;
@@ -54,7 +60,9 @@ private:
 	RegexParser orSelection(RegexParser selections[10], int numbSelections);
 	RegexParser iteration(RegexParser curNFA);
 
+	void RemoveAll();
 	void Init();
+	void CopyFrom(RegexParser const& obj);
 	void setVertex(int numVertex);
 	void setTransition(int vertexFrom, int vertexTo, char transitionSymbol);
 	void setFinalState(int finState);

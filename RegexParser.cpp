@@ -2,8 +2,28 @@
 
 RegexParser::RegexParser()
 {
-	lengthTransitions = 0;
-	lengthSpecialVertexes = 0;
+	Init();
+}
+
+RegexParser::RegexParser(RegexParser const & obj)
+{
+	Init();
+	CopyFrom(obj);
+}
+
+RegexParser::~RegexParser()
+{
+	
+}
+
+RegexParser& RegexParser::operator=(RegexParser const & obj)
+{
+	if (this != &obj)
+	{
+		CopyFrom(obj);
+	}
+
+	return *this;
 }
 
 RegexParser RegexParser::buildNFA(string regex)
@@ -115,9 +135,12 @@ RegexParser RegexParser::buildNFA(string regex)
 			<< operands.Top().transitions[i].vertexTo 
 			<< " " << operands.Top().transitions[i].transitionSymbol << " \n";
 
-		
+		cout << "before change: " << operands.Top().specialVertexes[vertexFrom].nextVert[specVertSize];
 		operands.Top().specialVertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertexTo;
+		cout << " after change: " << operands.Top().specialVertexes[vertexFrom].nextVert[specVertSize] << endl;
+		cout << operands.Top().specialVertexes[vertexFrom].transitionSymbol[specVertSize] << " ";
 		operands.Top().specialVertexes[vertexFrom].transitionSymbol[specVertSize] = operands.Top().transitions[i].transitionSymbol;
+		cout << operands.Top().specialVertexes[vertexFrom].transitionSymbol[specVertSize] << " ";
 		operands.Top().specialVertexes[vertexFrom].arrSize++;
 
 		cout << specialVertexes[vertexFrom].nextVert[specVertSize] << " ";
@@ -254,6 +277,33 @@ RegexParser RegexParser::iteration(RegexParser curNFA)
 	result.setFinalState(curNFA.getVertexCount() + 1);
 
 	return result;
+}
+
+void RegexParser::RemoveAll()
+{
+	/*delete &transitions;
+	delete &vertex;*/
+
+}
+
+void RegexParser::Init()
+{
+	lengthTransitions = 0;
+	lengthSpecialVertexes = 0;
+}
+
+void RegexParser::CopyFrom(RegexParser const& obj)
+{
+	if (obj.lengthSpecialVertexes == 0) return;
+
+	sizeVertex = obj.sizeVertex;
+	lengthSpecialVertexes = obj.lengthSpecialVertexes;
+	lengthTransitions = obj.lengthTransitions;
+	finalState = obj.finalState;
+
+	vertex = obj.vertex;
+	transitions = obj.transitions;
+	specialVertexes = obj.specialVertexes;
 }
 
 void RegexParser::setVertex(int numVertex)
