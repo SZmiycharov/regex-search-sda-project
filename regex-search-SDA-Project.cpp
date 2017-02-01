@@ -12,6 +12,18 @@
 *
 */
 
+/*******************************************
+**This program allows you to match a regular expression string to lines in a file or multiple files in directory
+**You should provide file name or directory name as second parameter ot the console line
+**You should also provide as third parameter the regular expression string
+**It MUST follow certain rules (or otherwise the program would not work properly):
+** - it must be enclosed in quotes and brackets "(<regex>)"
+** - the program understands these 4 special characters: \s = whitespace; \d = digit; \a = letter from English alphabet; \e = empty word
+** - concatenation between chars should be shown explicitly ("(a.b)" instead of "(ab)")
+** - special symbols ("\s", "\d", "\a", "\e") should be enclosed in brackets "(f(\s))"
+** - concatenation between char and special symbol must be implicit ("(f(\s))" instead of "(f.(\s))")
+*******************************************/
+
 #include "HelperFunctions.h"
 
 int main(int argc, char* argv[])
@@ -36,7 +48,7 @@ int main(int argc, char* argv[])
 	string path = argv[1];
 	string regex = argv[2];
 	//cin >> regex;
-	//validateRegex(regex);
+	validateRegex(regex);
 
 	cout << "regex before replace: " << regex << endl;
 

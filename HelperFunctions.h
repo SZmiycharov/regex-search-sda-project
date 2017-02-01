@@ -69,7 +69,7 @@ void preprocessRegex(string &str)
 	transform(str.begin(), str.end(), str.begin(), tolower);
 
 
-	//replaceAll(str, "\\", "\t");
+	//replaceAll(str, "\\\\", "\\");
 
 	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a singlechar \a (and \b, \f, \r)
 	replaceAll(str, "(\\a)", ".\a");

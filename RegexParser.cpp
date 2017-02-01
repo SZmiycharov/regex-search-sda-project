@@ -298,7 +298,6 @@ bool RegexParser::conditionCharEqual(string str, char ch)
 	if (str != "" && (ch == '\b' && int(str[0]) >= 48 && int(str[0]) <= 57)) return true;
 	if (str != "" && (ch == '\f' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) return true;
 	if (str != "" && (ch == '\v' && int(str[0]) == '\0')) return true;
-	if (str != "" && (ch == '\t' && int(str[0]) == '\\')) return true;
 
 	return false;
 }
