@@ -22,6 +22,9 @@
 ** - concatenation between chars should be shown explicitly ("(a.b)" instead of "(ab)")
 ** - special symbols ("\s", "\d", "\a", "\e") should be enclosed in brackets "(f(\s))"
 ** - concatenation between char and special symbol must be implicit ("(f(\s))" instead of "(f.(\s))")
+**
+** - regex match is case insensitive by default - to make it case sensitive, specify the "-s" switch 
+**		as fourth parameter when running the program
 *******************************************/
 
 #include "HelperFunctions.h"
@@ -47,14 +50,16 @@ int main(int argc, char* argv[])
 	//argv 1 is the given file name or path from console
 	string path = argv[1];
 	string regex = argv[2];
-	//cin >> regex;
+
+	bool caseSensitive = false;
+	if (argc == 4 && strcmp(argv[3], "-s") == 0)
+	{
+		caseSensitive = true;
+	}
+
 	validateRegex(regex);
 
-	cout << "regex before replace: " << regex << endl;
-
-	preprocessRegex(regex);
-
-	cout << "regex after replace: " << regex << endl;
+	preprocessRegex(regex, caseSensitive);
 
 	bool regexIsEmpty = false;
 
@@ -74,7 +79,7 @@ int main(int argc, char* argv[])
 
 	if (file.is_open())
 	{
-		readFile(path, &regexMatcher, regexIsEmpty);
+		readFile(path, &regexMatcher, regexIsEmpty, caseSensitive);
 	}
 	else if ((dir = opendir(path.c_str())) != NULL) 
 	{
@@ -82,7 +87,7 @@ int main(int argc, char* argv[])
 		{
 			string fileName = constructFileName(directoryEntry, path);
 
-			readFile(fileName, &regexMatcher, regexIsEmpty);
+			readFile(fileName, &regexMatcher, regexIsEmpty, caseSensitive);
 		}
 		closedir(dir);
 	}

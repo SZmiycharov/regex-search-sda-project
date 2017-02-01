@@ -63,10 +63,10 @@ void replaceAll(string& str, const string& from, const string& to)
 	}
 }
 
-void preprocessRegex(string &str)
+void preprocessRegex(string &str, bool caseSensitive)
 {
 	//transform regex to lowercase
-	transform(str.begin(), str.end(), str.begin(), tolower);
+	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
 
 	//replaceAll(str, "\\\\", "\\");
@@ -81,7 +81,7 @@ void preprocessRegex(string &str)
 	replaceAll(str, "(\\e)", "");
 }
 
-void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty)
+void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty, bool caseSensitive)
 {
 	ifstream file(fileName);
 	string line;
@@ -89,7 +89,7 @@ void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty)
 
 	while (std::getline(file, line))
 	{
-		transform(line.begin(), line.end(), line.begin(), tolower);
+		if (!caseSensitive) transform(line.begin(), line.end(), line.begin(), tolower);
 		if (regexMatcher->match(0, line) || regexIsEmpty)
 		{
 			cout << fileName << ":" << numberLine << ":" << line << endl;
