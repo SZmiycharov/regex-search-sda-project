@@ -4,6 +4,7 @@
 #include<stack>
 #include<iterator>
 #include "DynamicStack.h"
+#include "Vector.h"
 
 using namespace std;
 
@@ -49,7 +50,7 @@ private:
 	int finalState;
 
 	RegexParser concatenation(RegexParser op1, RegexParser op2);
-	RegexParser orSelection(vector<RegexParser> selections, int numbSelections);
+	RegexParser orSelection(RegexParser selections[10], int numbSelections);
 	RegexParser iteration(RegexParser a);
 
 	void Init();

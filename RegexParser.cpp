@@ -59,7 +59,7 @@ RegexParser RegexParser::buildNFA(string re)
 				operators.Pop();
 				RegexParser op1;
 				RegexParser op2;
-				vector<RegexParser> selections;
+				RegexParser selections[10];
 				if (op_sym == '.')
 				{
 					for (int i = 0; i < op_count; i++)
@@ -73,11 +73,15 @@ RegexParser RegexParser::buildNFA(string re)
 				}
 				else if (op_sym == '|')
 				{
-					selections.assign(op_count + 1, RegexParser());
+					//selections.assign(op_count + 1, RegexParser());
+					/*for (int i = 0; i <= op_count + 1; i++)
+					{
+						selections[i] = RegexParser();
+					}*/
 					int tracker = op_count;
 					for (int i = 0; i < op_count + 1; i++)
 					{
-						selections.at(tracker) = operands.Top();
+						selections[tracker] = operands.Top();
 						tracker--;
 						operands.Pop();
 					}
@@ -190,7 +194,7 @@ RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
 	return result;
 }
 
-RegexParser RegexParser::orSelection(vector<RegexParser> selections, int numbSelections)
+RegexParser RegexParser::orSelection(RegexParser selections[10], int numbSelections)
 {
 	RegexParser result;
 	int vertex_count = 2;
@@ -199,7 +203,7 @@ RegexParser RegexParser::orSelection(vector<RegexParser> selections, int numbSel
 	transition newTransition;
 
 	for (i = 0; i < numbSelections; i++) {
-		vertex_count += selections.at(i).getVertexCount();
+		vertex_count += selections[i].getVertexCount();
 	}
 
 	result.setVertex(vertex_count);
@@ -209,7 +213,7 @@ RegexParser RegexParser::orSelection(vector<RegexParser> selections, int numbSel
 	for (i = 0; i < numbSelections; i++)
 	{
 		result.setTransition(0, adder_track, '^');
-		med = selections.at(i);
+		med = selections[i];
 		for (j = 0; j < med.lengthTransitions; j++)
 		{
 			newTransition = med.transitions[j];
@@ -290,22 +294,10 @@ bool RegexParser::conditionCharEqual(string str, char ch)
 {
 	//remainingWord != "" && specialVertexes[currentVertex].transitionSymbol[i] == remainingWord[0]
 	if (str != "" && ch == str[0]) return true;
-	if (str != "" && (ch == '\a' && int(str[0]) >= 97 && int(str[0]) <= 122)) 
-	{
-		return true;
-	}
-	if (str != "" && (ch == '\d' && int(str[0]) >= 48 && int(str[0]) <= 57))
-	{
-		return true;
-	}
-	if (str != "" && (ch == '\s' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) 
-	{
-		return true;
-	}
-	if (str != "" && (ch == '\e' && int(str[0]) == 0))
-	{
-		return true;
-	}
+	if (str != "" && (ch == '\a' && int(str[0]) >= 97 && int(str[0]) <= 122)) return true;
+	if (str != "" && (ch == '\d' && int(str[0]) >= 48 && int(str[0]) <= 57)) return true;
+	if (str != "" && (ch == '\s' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) return true;
+	if (str != "" && (ch == '\e' && int(str[0]) == 0)) return true;
 
 	return false;
 }

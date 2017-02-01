@@ -1,4 +1,4 @@
-﻿Build started 1.2.2017 г. 13:52:24.
+﻿Build started 1.2.2017 г. 14:14:33.
      1>Project "C:\Users\stanislav\Documents\Visual Studio 2013\Projects\regex-search-SDA-Project\regex-search-SDA-Project\regex-search-SDA-Project.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt "regex-search-SDA-Project.cpp"
@@ -12,4 +12,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.84
+Time Elapsed 00:00:00.86
