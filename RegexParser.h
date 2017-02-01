@@ -27,7 +27,7 @@ public:
 	RegexParser();
 	/*we do not need the BIG 4 as nothing in our class is dynamically allocated (on the heap)*/
 
-	RegexParser buildNFA(string re);
+	RegexParser buildNFA(string regex);
 	bool match(int currentVertex, string remainingWord);
 	void display();
 
@@ -39,40 +39,31 @@ private:
 		char transitionSymbol;
 	};
 
-	struct vert
-	{
-		int indexString;
-		int id;
-	};
-
-	struct specialVert
+	struct vertex
 	{
 		//by definition, every vertex can have 2 next vertexes or less
 		int nextVert[3];
 		char transitionSymbol[3];
 		int arrSize;
 
-		specialVert() : arrSize(0){}
+		vertex() : arrSize(0){}
 	};
 
-	vert vertex[40];
 	transition transitions[100];
-	specialVert specialVertexes[100];
-	int sizeVertex = 0;
-	int lengthSpecialVertexes;
+	vertex vertexes[100];
+	int countVertexes;
 	int lengthTransitions;
 	int finalState;
 
 	RegexParser concatenation(RegexParser op1, RegexParser op2);
 	RegexParser orSelection(RegexParser selections[50], int numbSelections);
-	RegexParser iteration(RegexParser a);
+	RegexParser iteration(RegexParser operandSymb);
 
-	void Init();
-	void setVertex(int numVertex);
+	void increaseVertexCount(int vertexCount);
 	void setTransition(int vertexFrom, int vertexTo, char transitionSymbol);
 	void setFinalState(int finState);
-	int getVertexCount();
 	int getFinalState();
+	int getVertexCount();
 	static bool conditionEqual(string str, char ch);
 };
 
