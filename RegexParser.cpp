@@ -20,53 +20,56 @@ RegexParser::RegexParser()
 	lengthSpecialVertexes = 0;
 }
 
-RegexParser RegexParser::buildNFA(string re)
+RegexParser RegexParser::buildNFA(string regex)
 {
 	RegexParser test;
 	DynamicStack<char> operators;
 	DynamicStack<RegexParser> operands;
-	char op_sym;
+	char operatorSymb;
 	int operandsCount;
-	char cur_sym;
+	char curSymbol;
 	RegexParser *new_sym;
 
-	for (string::iterator it = re.begin(); it != re.end(); ++it)
+	for (int i = 0; i < regex.size(); i++)
 	{
-		cur_sym = *it;
-		if (cur_sym != '(' && cur_sym != ')' && cur_sym != '*' && cur_sym != '|' && cur_sym != '.') {
+		curSymbol = regex[i];
+		if (curSymbol != '(' && curSymbol != ')' && curSymbol != '*' && curSymbol != '|' && curSymbol != '.') 
+		{
 			new_sym = new RegexParser();
 			new_sym->setVertex(2);
-			new_sym->setTransition(0, 1, cur_sym);
+			new_sym->setTransition(0, 1, curSymbol);
 			new_sym->setFinalState(1);
 			operands.Push(*new_sym);
 			delete new_sym;
 		}
-		else {
-			if (cur_sym == '*')
+		else
+		{
+			if (curSymbol == '*')
 			{
 				RegexParser star_sym = operands.Top();
 				operands.Pop();
 				operands.Push(iteration(star_sym));
 			}
-			else if (cur_sym == '.')
+			else if (curSymbol == '.')
 			{
-				operators.Push(cur_sym);
+				operators.Push(curSymbol);
 			}
-			else if (cur_sym == '|')
+			else if (curSymbol == '|')
 			{
-				operators.Push(cur_sym);
+				operators.Push(curSymbol);
 			}
-			else if (cur_sym == '(')
+			else if (curSymbol == '(')
 			{
-				operators.Push(cur_sym);
+				operators.Push(curSymbol);
 			}
 			else
 			{
 				operandsCount = 0;
 				char c;
-				op_sym = operators.Top();
-				if (op_sym == '(') continue;
-				do {
+				operatorSymb = operators.Top();
+				if (operatorSymb == '(') continue;
+				do 
+				{
 					operators.Pop();
 					operandsCount++;
 				} while (operators.Top() != '(');
@@ -74,7 +77,7 @@ RegexParser RegexParser::buildNFA(string re)
 				RegexParser op1;
 				RegexParser op2;
 				RegexParser selections[50];
-				if (op_sym == '.')
+				if (operatorSymb == '.')
 				{
 					for (int i = 0; i < operandsCount; i++)
 					{
@@ -85,15 +88,17 @@ RegexParser RegexParser::buildNFA(string re)
 						operands.Push(concatenation(op1, op2));
 					}
 				}
-				else if (op_sym == '|')
+				else if (operatorSymb == '|')
 				{
-					int tracker = operandsCount;
+					int trackerOperands = operandsCount;
+
 					for (int i = 0; i < operandsCount + 1; i++)
 					{
-						selections[tracker] = operands.Top();
-						tracker--;
+						selections[trackerOperands] = operands.Top();
+						trackerOperands--;
 						operands.Pop();
 					}
+
 					operands.Push(orSelection(selections, operandsCount + 1));
 				}
 				else
