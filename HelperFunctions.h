@@ -63,26 +63,23 @@ void replaceAll(string& str, const string& from, const string& to)
 	}
 }
 
-//void preprocessRegex(string &str)
-//{
-//	//transform regex to lowercase
-//	transform(str.begin(), str.end(), str.begin(), tolower);
-//
-//	//replace all double backslashes with single ones
-//	replaceAll(str, "\\\\", "\\");
-//
-//	//\d replaces all digits
-//	replaceAll(str, "(\\d)", "(0|1|2|3|4|5|6|7|8|9)");
-//
-//	// \s replaces empty spaces
-//	replaceAll(str, "(\\s)", "( |	|\n)");
-//
-//	//\e replaces the empty word
-//	replaceAll(str, ".(\\e)", "");
-//
-//	//\d replaces all leters from alphabet
-//	replaceAll(str, "(\\a)", "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)");
-//}
+void preprocessRegex(string &str)
+{
+	//transform regex to lowercase
+	transform(str.begin(), str.end(), str.begin(), tolower);
+
+
+	//replaceAll(str, "\\", "\t");
+
+	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a singlechar \a (and \b, \f, \r)
+	replaceAll(str, "(\\a)", ".\a");
+
+	replaceAll(str, "(\\d)", ".\b");
+
+	replaceAll(str, "(\\s)", ".\f");
+
+	replaceAll(str, "(\\e)", "");
+}
 
 void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty)
 {

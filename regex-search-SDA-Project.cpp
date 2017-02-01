@@ -33,13 +33,14 @@ int main(int argc, char* argv[])
 	struct dirent *directoryEntry;
 
 	//argv 1 is the given file name or path from console
-	string path = "D:\\Users\\Desktop\\test\\test1.txt";
-	string regex = "(a*)";
-	validateRegex(regex);
+	string path = argv[1];
+	string regex = argv[2];
+	//cin >> regex;
+	//validateRegex(regex);
 
 	cout << "regex before replace: " << regex << endl;
 
-	//preprocessRegex(regex);
+	preprocessRegex(regex);
 
 	cout << "regex after replace: " << regex << endl;
 

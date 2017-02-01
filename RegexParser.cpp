@@ -295,9 +295,10 @@ bool RegexParser::conditionCharEqual(string str, char ch)
 	//remainingWord != "" && specialVertexes[currentVertex].transitionSymbol[i] == remainingWord[0]
 	if (str != "" && ch == str[0]) return true;
 	if (str != "" && (ch == '\a' && int(str[0]) >= 97 && int(str[0]) <= 122)) return true;
-	if (str != "" && (ch == '\d' && int(str[0]) >= 48 && int(str[0]) <= 57)) return true;
-	if (str != "" && (ch == '\s' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) return true;
-	if (str != "" && (ch == '\e' && int(str[0]) == 0)) return true;
+	if (str != "" && (ch == '\b' && int(str[0]) >= 48 && int(str[0]) <= 57)) return true;
+	if (str != "" && (ch == '\f' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) return true;
+	if (str != "" && (ch == '\v' && int(str[0]) == '\0')) return true;
+	if (str != "" && (ch == '\t' && int(str[0]) == '\\')) return true;
 
 	return false;
 }
