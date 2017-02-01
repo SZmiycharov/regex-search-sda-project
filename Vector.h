@@ -7,7 +7,7 @@ class Vector
 {
 private:
 	//actual members
-	int m_size;
+	
 	//length of array
 	int m_capacity;
 	T * vectArr;
@@ -15,6 +15,7 @@ private:
 	void copy(T**, int);
 
 public:
+	int m_size;
 	Vector();
 	Vector(int);
 	Vector(const Vector<T>&);
