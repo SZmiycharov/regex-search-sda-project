@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework task
+* Data Structures Course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2016/2017
+*
+* @author Stanislav Zmiycharov
+* @idnumber 61883
+* @task 0
+* @compiler VC
+*
+*/
+
 #include "RegexParser.h"
 
 RegexParser::RegexParser()
@@ -12,7 +26,7 @@ RegexParser RegexParser::buildNFA(string re)
 	DynamicStack<char> operators;
 	DynamicStack<RegexParser> operands;
 	char op_sym;
-	int op_count;
+	int operandsCount;
 	char cur_sym;
 	RegexParser *new_sym;
 
@@ -48,21 +62,21 @@ RegexParser RegexParser::buildNFA(string re)
 			}
 			else
 			{
-				op_count = 0;
+				operandsCount = 0;
 				char c;
 				op_sym = operators.Top();
 				if (op_sym == '(') continue;
 				do {
 					operators.Pop();
-					op_count++;
+					operandsCount++;
 				} while (operators.Top() != '(');
 				operators.Pop();
 				RegexParser op1;
 				RegexParser op2;
-				RegexParser selections[10];
+				RegexParser selections[50];
 				if (op_sym == '.')
 				{
-					for (int i = 0; i < op_count; i++)
+					for (int i = 0; i < operandsCount; i++)
 					{
 						op2 = operands.Top();
 						operands.Pop();
@@ -73,23 +87,20 @@ RegexParser RegexParser::buildNFA(string re)
 				}
 				else if (op_sym == '|')
 				{
-					//selections.assign(op_count + 1, RegexParser());
-					/*for (int i = 0; i <= op_count + 1; i++)
-					{
-						selections[i] = RegexParser();
-					}*/
-					int tracker = op_count;
-					for (int i = 0; i < op_count + 1; i++)
+					int tracker = operandsCount;
+					for (int i = 0; i < operandsCount + 1; i++)
 					{
 						selections[tracker] = operands.Top();
 						tracker--;
 						operands.Pop();
 					}
-					operands.Push(orSelection(selections, op_count + 1));
+					operands.Push(orSelection(selections, operandsCount + 1));
 				}
 				else
 				{
-
+					std::cerr << "Regex parser encountered a problem while processing!\n";
+					system("pause");
+					exit(EXIT_FAILURE);
 				}
 			}
 		}
@@ -142,8 +153,7 @@ bool RegexParser::match(int currentVertex, string remainingWord)
 
 	for (int i = 0; i < specialVertexes[currentVertex].arrSize; i++)
 	{
-		// (remainingWord != "" && specialVertexes[currentVertex].transitionSymbol[i] == remainingWord[0])
-		if (RegexParser::conditionCharEqual(remainingWord, specialVertexes[currentVertex].transitionSymbol[i]))
+		if (RegexParser::conditionEqual(remainingWord, specialVertexes[currentVertex].transitionSymbol[i]))
 		{
 			if (match(specialVertexes[currentVertex].nextVert[i], remainingWord.substr(1, string::npos))) return true;
 		}
@@ -194,7 +204,7 @@ RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
 	return result;
 }
 
-RegexParser RegexParser::orSelection(RegexParser selections[10], int numbSelections)
+RegexParser RegexParser::orSelection(RegexParser selections[50], int numbSelections)
 {
 	RegexParser result;
 	int vertex_count = 2;
@@ -290,14 +300,14 @@ int RegexParser::getFinalState()
 }
 
 //remainingWord, specialVertexes[currentVertex].transitionSymbol[i]
-bool RegexParser::conditionCharEqual(string str, char ch)
+bool RegexParser::conditionEqual(string str, char ch)
 {
+	//\f = whitespace; \b = digit; \a = letter from English alphabet
 	//remainingWord != "" && specialVertexes[currentVertex].transitionSymbol[i] == remainingWord[0]
 	if (str != "" && ch == str[0]) return true;
 	if (str != "" && (ch == '\a' && int(str[0]) >= 97 && int(str[0]) <= 122)) return true;
 	if (str != "" && (ch == '\b' && int(str[0]) >= 48 && int(str[0]) <= 57)) return true;
 	if (str != "" && (ch == '\f' && int(str[0]) == 32 || int(str[0]) == 9) || int(str[0]) == 10) return true;
-	if (str != "" && (ch == '\v' && int(str[0]) == '\0')) return true;
 
 	return false;
 }

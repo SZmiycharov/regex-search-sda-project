@@ -14,7 +14,7 @@
 
 /*******************************************
 **This program allows you to match a regular expression string to lines in a file or multiple files in directory
-**You should provide file name or directory name as second parameter ot the console line
+**You should provide file name or directory name as second parameter on the console line
 **You should also provide as third parameter the regular expression string
 **It MUST follow certain rules (or otherwise the program would not work properly):
 ** - it must be enclosed in quotes and brackets "(<regex>)"
@@ -22,7 +22,10 @@
 ** - concatenation between chars should be shown explicitly ("(a.b)" instead of "(ab)")
 ** - special symbols ("\s", "\d", "\a", "\e") should be enclosed in brackets "(f(\s))"
 ** - concatenation between char and special symbol must be implicit ("(f(\s))" instead of "(f.(\s))")
-**
+** - ((a.b)*|(c.d)*) matches "" or "ababab" or "cdcdcd" etc.
+** - (a*.b*) matches "" or "aaa" or "bbb" or "aaabbbb" etc.
+** - (((a.b)|(c.d)).((f.x)|(z.h))) matches "abfx" or "abzh" or "cdfx" etc.
+** - (b.a*) matches "b" or "ba" or "baaaa" etc
 ** - regex match is case insensitive by default - to make it case sensitive, specify the "-s" switch 
 **		as fourth parameter when running the program
 *******************************************/
@@ -79,7 +82,7 @@ int main(int argc, char* argv[])
 
 	if (file.is_open())
 	{
-		readFile(path, &regexMatcher, regexIsEmpty, caseSensitive);
+		readFile(path, regexMatcher, regexIsEmpty, caseSensitive);
 	}
 	else if ((dir = opendir(path.c_str())) != NULL) 
 	{
@@ -87,7 +90,7 @@ int main(int argc, char* argv[])
 		{
 			string fileName = constructFileName(directoryEntry, path);
 
-			readFile(fileName, &regexMatcher, regexIsEmpty, caseSensitive);
+			readFile(fileName, regexMatcher, regexIsEmpty, caseSensitive);
 		}
 		closedir(dir);
 	}

@@ -36,11 +36,11 @@ void validateRegex(string re)
 	}
 }
 
+//if we are provided with a path as: D:\Users\Desktop append \ to make it valid
 string constructFileName(dirent *directoryEntry, string path)
 {
 	string fileName = directoryEntry->d_name;
 
-	//append trailing slash to directory if it is not present
 	int i = 0;
 	while (path[i] != NULL) ++i;
 	if (path[i - 1] != '\\') path += '\\';
@@ -59,29 +59,23 @@ void replaceAll(string& str, const string& from, const string& to)
 	while ((start_pos = str.find(from, start_pos)) != string::npos) 
 	{
 		str.replace(start_pos, from.length(), to);
-		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+		start_pos += to.length(); // In case the "to" string contains the "from" string
 	}
 }
 
 void preprocessRegex(string &str, bool caseSensitive)
 {
-	//transform regex to lowercase
+	//transform regex to lowercase if regex match is case insensitive
 	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
-
-	//replaceAll(str, "\\\\", "\\");
-
-	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a singlechar \a (and \b, \f, \r)
-	replaceAll(str, "(\\a)", ".\a");
-
-	replaceAll(str, "(\\d)", ".\b");
-
-	replaceAll(str, "(\\s)", ".\f");
-
+	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a single special char \a (and \b, \f, \r)
+	replaceAll(str, "(\\a)", "..\a");
+	replaceAll(str, "(\\d)", "..\b");
+	replaceAll(str, "(\\s)", "..\f");
 	replaceAll(str, "(\\e)", "");
 }
 
-void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty, bool caseSensitive)
+void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty, bool caseSensitive)
 {
 	ifstream file(fileName);
 	string line;
@@ -90,7 +84,7 @@ void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty, boo
 	while (std::getline(file, line))
 	{
 		if (!caseSensitive) transform(line.begin(), line.end(), line.begin(), tolower);
-		if (regexMatcher->match(0, line) || regexIsEmpty)
+		if (regexMatcher.match(0, line) || regexIsEmpty)
 		{
 			cout << fileName << ":" << numberLine << ":" << line << endl;
 		}
@@ -99,7 +93,7 @@ void readFile(string fileName, RegexParser* regexMatcher, bool regexIsEmpty, boo
 	}
 }
 
-//check if a number is given from console
+//we must have filename/directory and regex string provided from cmd line
 void validateCmdParams(int argc, char* argv[])
 {
 	if (argc != 3)
@@ -108,28 +102,4 @@ void validateCmdParams(int argc, char* argv[])
 		system("pause");
 		exit(EXIT_FAILURE);
 	}
-}
-
-//fill array with entries from binary file
-void fileToArray(std::string fileName, uint64_t(&numbersFromFile)[10000], int &arrSize)
-{
-	std::fstream readFile;
-
-	uint64_t num;
-
-	readFile.open(fileName, std::ios_base::binary | std::ios_base::in);
-	if (readFile.is_open())
-	{
-		while (readFile.read((char*)&num, sizeof(num)))
-		{
-			numbersFromFile[arrSize] = num;
-			++arrSize;
-		}
-	}
-	else
-	{
-		std::cerr << "Unable to open file " << fileName << "\n";
-		exit(EXIT_FAILURE);
-	}
-	readFile.close();
 }

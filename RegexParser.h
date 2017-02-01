@@ -1,34 +1,25 @@
+/**
+*
+* Solution to homework task
+* Data Structures Course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2016/2017
+*
+* @author Stanislav Zmiycharov
+* @idnumber 61883
+* @task 0
+* @compiler VC
+*
+*/
+
 #include<iostream>
 #include<vector>
 #include<string>
 #include<stack>
 #include<iterator>
 #include "DynamicStack.h"
-#include "Vector.h"
 
 using namespace std;
-
-struct transition
-{
-	int vertexFrom;
-	int vertexTo;
-	char transitionSymbol;
-};
-
-struct vert
-{
-	int indexString;
-	int id;
-};
-
-struct specialVert
-{
-	int nextVert[50];
-	char transitionSymbol[50];
-	int arrSize;
-
-	specialVert() : arrSize(0){}
-};
 
 class RegexParser
 {
@@ -41,7 +32,30 @@ public:
 	void display();
 
 private:
-	vert vertex[100];
+	struct transition
+	{
+		int vertexFrom;
+		int vertexTo;
+		char transitionSymbol;
+	};
+
+	struct vert
+	{
+		int indexString;
+		int id;
+	};
+
+	struct specialVert
+	{
+		//by definition, every vertex can have 2 next vertexes or less
+		int nextVert[3];
+		char transitionSymbol[3];
+		int arrSize;
+
+		specialVert() : arrSize(0){}
+	};
+
+	vert vertex[40];
 	transition transitions[100];
 	specialVert specialVertexes[100];
 	int sizeVertex = 0;
@@ -50,7 +64,7 @@ private:
 	int finalState;
 
 	RegexParser concatenation(RegexParser op1, RegexParser op2);
-	RegexParser orSelection(RegexParser selections[10], int numbSelections);
+	RegexParser orSelection(RegexParser selections[50], int numbSelections);
 	RegexParser iteration(RegexParser a);
 
 	void Init();
@@ -59,7 +73,7 @@ private:
 	void setFinalState(int finState);
 	int getVertexCount();
 	int getFinalState();
-	static bool conditionCharEqual(string str, char ch);
+	static bool conditionEqual(string str, char ch);
 };
 
 
