@@ -105,9 +105,9 @@ void preprocessRegex(string &str, bool caseSensitive)
 	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
 	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a single special char \a (and \b, \f, \r)
-	replaceAll(str, "(\\a)", "..\a");
-	replaceAll(str, "(\\d)", "..\b");
-	replaceAll(str, "(\\s)", "..\f");
+	replaceAll(str, "(\\a)", ".\a");
+	replaceAll(str, "(\\d)", ".\b");
+	replaceAll(str, "(\\s)", ".\f");
 	replaceAll(str, "(\\e)", "");
 }
 
