@@ -64,6 +64,8 @@ int main(int argc, char* argv[])
 
 	preprocessRegex(regex, caseSensitive);
 
+	cout << "regex after process: " << regex << endl;
+
 	bool regexIsEmpty = false;
 
 	if (!regex.empty())

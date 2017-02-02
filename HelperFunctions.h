@@ -36,6 +36,23 @@ void validateRegex(string re)
 	}
 }
 
+//my regex parser relies that "." is used when concatenating, so I put "." between the symbols when the user forgets to
+void makeConcatExplicit(string &str)
+{
+	string helperStr = str;
+
+	for (int i = str.size() - 1; i > 0; --i)
+	{
+		if (int(str[i]) != 92 && int(str[i]) != 40 && int(str[i]) != 41 && int(str[i]) != 42 && int(str[i]) != 46
+			&& int(str[i]) != 124 && int(str[i-1]) != 124 && int(str[i - 1]) != 92 && int(str[i - 1]) != 40 && int(str[i - 1]) != 41 && int(str[i - 1]) != 46)
+		{
+			helperStr.insert(i, ".");
+		}
+	}
+
+	str = helperStr;
+}
+
 //if we are provided with a path as: D:\Users\Desktop append \ to make it valid
 string constructFileName(dirent *directoryEntry, string path)
 {
@@ -65,6 +82,8 @@ void replaceAll(string& str, const string& from, const string& to)
 
 void preprocessRegex(string &str, bool caseSensitive)
 {
+	makeConcatExplicit(str);
+
 	//transform regex to lowercase if regex match is case insensitive
 	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
