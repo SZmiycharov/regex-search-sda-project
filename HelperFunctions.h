@@ -54,18 +54,12 @@ void makeConcatExplicit(string &str)
 	str = helperStr;
 }
 
-//if we are provided with a path as: D:\Users\Desktop append \ to make it valid
-string constructFileName(dirent *directoryEntry, string path)
+void removeLastSlash(string &path)
 {
-	string fileName = directoryEntry->d_name;
-
-	int i = 0;
-	while (path[i] != NULL) ++i;
-	if (path[i - 1] != '\\') path += '\\';
-
-	fileName = path + fileName;
-
-	return fileName;
+	if (path[path.size() - 1] == '\\')
+	{
+		path = path.substr(0, path.size() - 1);
+	}
 }
 
 //helper function to replace all occurences of from with to in string str

@@ -53,10 +53,7 @@ int main(int argc, char* argv[])
 	}
 
 	validateRegex(regex);
-
 	preprocessRegex(regex, caseSensitive);
-
-	cout << "regex after process: " << regex << endl;
 
 	bool regexIsEmpty = false;
 
@@ -78,13 +75,20 @@ int main(int argc, char* argv[])
 	{
 		readFile(path, regexMatcher, regexIsEmpty, caseSensitive);
 	}
-	else if (stat(path.c_str(), &info) != 0)
-	{
-		cerr << "Unable to open " << path << "\n";
-		exit(EXIT_FAILURE);
-	}
 	else
 	{
+		//if we are provided with directory such as "D:\Users\", we must get rid of the last slash
+		//so it becomes "D:\Users"
+		removeLastSlash(path);
+
+		//if directory does not exist
+		if (stat(path.c_str(), &info) != 0)
+		{
+			cerr << "Unable to open " << path << "\n";
+			exit(EXIT_FAILURE);
+		}
+
+		//iterate over all filenames in directory and its subdirectory recursively
 		for (recursive_directory_iterator i(path), end; i != end; ++i)
 		{
 			if (!is_directory(i->path()))
