@@ -16,7 +16,7 @@
 **This program allows you to match a regular expression string to lines in a file or multiple files in directory
 **You should provide file name or directory name as second parameter on the console line
 **You should also provide as third parameter the regular expression string
-**It MUST follow certain rules (or otherwise the program would not work properly):
+**The provided regex MUST follow certain rules (or otherwise the program would not work properly):
 ** - it must be enclosed in quotes and brackets "(<regex>)"
 ** - the program understands these 4 special characters: \s = whitespace; \d = digit; \a = letter from English alphabet; \e = empty word
 ** - concatenation between chars should be shown explicitly ("(a.b)" instead of "(ab)")
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 	return 0;*/
 
 	//make sure we have file and regex provided
-	//validateCmdParams(argc, argv);
+	validateCmdParams(argc, argv);
 
 	RegexParser regexMatcher;
 

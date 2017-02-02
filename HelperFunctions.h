@@ -80,10 +80,27 @@ void replaceAll(string& str, const string& from, const string& to)
 	}
 }
 
+// the given regex MUST be into braces and quotes, so if the user does not provide them - I provide them
+void ensureFormatting(string &str)
+{
+	cout << "0: " << int(str[0]) << " char:" << str[0] << endl;
+	//cout << "1: " << int(str[1]) << " char:" << str[0] << endl;
+	//cout << "size-2: " << int(str[str.size() - 2]) << " char:" << str[str.size() - 2] << endl;
+	cout << "size - 1: " << int(str[str.size() - 1]) << " char:" << str[str.size() - 1] << endl;
+
+ 	if (str[0] != '(' || str[str.size() - 1] != ')')
+	{
+		str.insert(0, "(");
+		str.insert(str.size(), ")");
+	}
+}
+
 void preprocessRegex(string &str, bool caseSensitive)
 {
+	cout << "\nin preprocess regex : " << str << endl;
+	ensureFormatting(str);
 	makeConcatExplicit(str);
-
+	
 	//transform regex to lowercase if regex match is case insensitive
 	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
