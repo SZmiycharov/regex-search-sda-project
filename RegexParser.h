@@ -13,9 +13,7 @@
 */
 
 #include<iostream>
-#include<vector>
 #include<string>
-#include<stack>
 #include<iterator>
 #include "DynamicStack.h"
 
@@ -29,7 +27,6 @@ public:
 
 	RegexParser buildNFA(string regex);
 	bool match(int currentVertex, string remainingWord);
-	void display();
 
 private:
 	struct transition
@@ -41,7 +38,7 @@ private:
 
 	struct vertex
 	{
-		//by definition, every vertex can have 2 next vertexes or less
+		//by definition (Thompson's algorithm), every vertex can have 2 next vertexes or less
 		int nextVert[3];
 		char transitionSymbol[3];
 		int arrSize;
@@ -49,8 +46,8 @@ private:
 		vertex() : arrSize(0){}
 	};
 
-	transition transitions[100];
-	vertex vertexes[100];
+	transition transitions[500];
+	vertex vertexes[500];
 	int countVertexes;
 	int lengthTransitions;
 	int finalState;

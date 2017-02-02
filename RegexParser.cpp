@@ -20,15 +20,16 @@ RegexParser::RegexParser()
 	countVertexes = 0;
 }
 
+//using Thompson's algorithm, iterate over string regex and construct NFA
 RegexParser RegexParser::buildNFA(string regex)
 {
-	RegexParser test;
 	DynamicStack<char> operators;
 	DynamicStack<RegexParser> operands;
+	
+	RegexParser *new_sym;
+	char curSymbol;
 	char operatorSymb;
 	int operandsCount;
-	char curSymbol;
-	RegexParser *new_sym;
 
 	for (int i = 0; i < regex.size(); i++)
 	{
@@ -63,20 +64,26 @@ RegexParser RegexParser::buildNFA(string regex)
 				operators.Push(curSymbol);
 			}
 			else
-			{
-				operandsCount = 0;
+			{ 
 				char c;
+
+				operandsCount = 0;
 				operatorSymb = operators.Top();
+
 				if (operatorSymb == '(') continue;
+
 				do 
 				{
 					operators.Pop();
 					operandsCount++;
 				} while (operators.Top() != '(');
+
 				operators.Pop();
+				
 				RegexParser op1;
 				RegexParser op2;
 				RegexParser selections[50];
+				
 				if (operatorSymb == '.')
 				{
 					for (int i = 0; i < operandsCount; i++)
@@ -111,14 +118,17 @@ RegexParser RegexParser::buildNFA(string regex)
 		}
 	}
 
+	// create the "special" vertexes, which represent our NFA as
+	// index: value, where index == vertex number and the value shows
+	// to which vertexes is the current one connected and with what symbol
 	for (int i = 0; i < operands.Top().lengthTransitions; i++)
 	{
-		int specVertSize = operands.Top().vertexes[operands.Top().transitions[i].vertexFrom].arrSize;
+		int vertSize = operands.Top().vertexes[operands.Top().transitions[i].vertexFrom].arrSize;
 		int vertexFrom = operands.Top().transitions[i].vertexFrom;
 
-		if (specVertSize <= -1)
+		if (vertSize <= -1)
 		{
-			specVertSize = 0;
+			vertSize = 0;
 		}
 
 		if (vertexes[vertexFrom].arrSize <= -1)
@@ -127,12 +137,12 @@ RegexParser RegexParser::buildNFA(string regex)
 			vertexes[vertexFrom].arrSize = 0;
 		}
 
-		operands.Top().vertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertexTo;
-		operands.Top().vertexes[vertexFrom].transitionSymbol[specVertSize] = operands.Top().transitions[i].transitionSymbol;
+		operands.Top().vertexes[vertexFrom].nextVert[vertSize] = operands.Top().transitions[i].vertexTo;
+		operands.Top().vertexes[vertexFrom].transitionSymbol[vertSize] = operands.Top().transitions[i].transitionSymbol;
 		operands.Top().vertexes[vertexFrom].arrSize++;
 
-		vertexes[vertexFrom].nextVert[specVertSize] = operands.Top().transitions[i].vertexTo;
-		vertexes[vertexFrom].transitionSymbol[specVertSize] = operands.Top().transitions[i].transitionSymbol;
+		vertexes[vertexFrom].nextVert[vertSize] = operands.Top().transitions[i].vertexTo;
+		vertexes[vertexFrom].transitionSymbol[vertSize] = operands.Top().transitions[i].transitionSymbol;
 		vertexes[vertexFrom].arrSize++;
 	}
 
@@ -148,34 +158,24 @@ RegexParser RegexParser::buildNFA(string regex)
 
 bool RegexParser::match(int currentVertex, string remainingWord)
 {
-	//cout << "vertex: " << currentVertex << "; word: " << remainingWord << endl;
-	if (remainingWord == "" && currentVertex == getFinalState()) return true;
+	//if we are at a final state match
+	if (currentVertex == getFinalState()) return true;
 
 	for (int i = 0; i < vertexes[currentVertex].arrSize; i++)
 	{
 		if (RegexParser::conditionEqual(remainingWord, vertexes[currentVertex].transitionSymbol[i]))
 		{
+			//if our letter matches - move forward the NFA and the string
 			if (match(vertexes[currentVertex].nextVert[i], remainingWord.substr(1, string::npos))) return true;
 		}
 		else if (vertexes[currentVertex].transitionSymbol[i] == '^')
 		{
+			//if we have epsilon transition - move forward the NFA
 			if (match(vertexes[currentVertex].nextVert[i], remainingWord)) return true;
 		}
 	}
 
 	return false;
-}
-
-void RegexParser::display()
-{
-	transition newTransition;
-	//cout << "\n";
-	for (int i = 0; i < lengthTransitions; i++)
-	{
-		newTransition = transitions[i];
-		//cout << "q" << newTransition.vertexFrom << " --> q" << newTransition.vertexTo << " : Symbol - " << newTransition.transitionSymbol << endl;
-	}
-	//cout << "\nThe final state is q" << getFinalState() << endl;
 }
 
 RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
@@ -243,13 +243,12 @@ RegexParser RegexParser::orSelection(RegexParser selections[50], int numbSelecti
 RegexParser RegexParser::iteration(RegexParser operandSymb)
 {
 	RegexParser result;
-	int i;
 	transition newTransition;
 
 	result.increaseVertexCount(operandSymb.getVertexCount() + 2);
 	result.setTransition(0, 1, '^');
 
-	for (i = 0; i < operandSymb.lengthTransitions; i++)
+	for (int i = 0; i < operandSymb.lengthTransitions; i++)
 	{
 		newTransition = operandSymb.transitions[i];
 		result.setTransition(newTransition.vertexFrom + 1, newTransition.vertexTo + 1, newTransition.transitionSymbol);
@@ -297,6 +296,8 @@ int RegexParser::getVertexCount()
 	return countVertexes;
 }
 
+// as our regex parser accepts special characters
+//that replace multiple other characters, we must consider them when matching
 bool RegexParser::conditionEqual(string str, char ch)
 {
 	//\f = whitespace; \b = digit; \a = letter from English alphabet

@@ -36,7 +36,8 @@ void validateRegex(string re)
 	}
 }
 
-//my regex parser relies that "." is used when concatenating, so I put "." between the symbols when the user forgets to
+//my regex parser relies that "." is used when concatenating, so I put "." between the symbols
+//except they are special (like *, | etc.) when the user forgets to
 void makeConcatExplicit(string &str)
 {
 	string helperStr = str;
@@ -67,6 +68,7 @@ string constructFileName(dirent *directoryEntry, string path)
 	return fileName;
 }
 
+//helper function to replace all occurences of from with to in string str
 void replaceAll(string& str, const string& from, const string& to) 
 {
 	if (from.empty()) return;
@@ -83,11 +85,6 @@ void replaceAll(string& str, const string& from, const string& to)
 // the given regex MUST be into braces and quotes, so if the user does not provide them - I provide them
 void ensureFormatting(string &str)
 {
-	cout << "0: " << int(str[0]) << " char:" << str[0] << endl;
-	//cout << "1: " << int(str[1]) << " char:" << str[0] << endl;
-	//cout << "size-2: " << int(str[str.size() - 2]) << " char:" << str[str.size() - 2] << endl;
-	cout << "size - 1: " << int(str[str.size() - 1]) << " char:" << str[str.size() - 1] << endl;
-
  	if (str[0] != '(' || str[str.size() - 1] != ')')
 	{
 		str.insert(0, "(");
@@ -97,14 +94,13 @@ void ensureFormatting(string &str)
 
 void preprocessRegex(string &str, bool caseSensitive)
 {
-	cout << "\nin preprocess regex : " << str << endl;
 	ensureFormatting(str);
 	makeConcatExplicit(str);
 	
 	//transform regex to lowercase if regex match is case insensitive
 	if (!caseSensitive) transform(str.begin(), str.end(), str.begin(), tolower);
 
-	//"\a" from stdin is represented as \\ + a in the string, so I convert it to a single special char \a (and \b, \f, \r)
+	//'\a' from stdin is represented as \\ + a in the string, so I convert it to a single special char '\a' (and '\b', '\f', '\r')
 	replaceAll(str, "(\\a)", ".\a");
 	replaceAll(str, "(\\d)", ".\b");
 	replaceAll(str, "(\\s)", ".\f");
@@ -115,16 +111,24 @@ void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty, bool
 {
 	ifstream file(fileName);
 	string line;
+	string lineOriginal;
 	int numberLine = 1;
 
 	while (std::getline(file, line))
 	{
-		if (!caseSensitive) transform(line.begin(), line.end(), line.begin(), tolower);
-		if (regexMatcher.match(0, line) || regexIsEmpty)
-		{
-			cout << fileName << ":" << numberLine << ":" << line << endl;
-		}
+		lineOriginal = line;
 
+		if (!caseSensitive) transform(line.begin(), line.end(), line.begin(), tolower);
+
+		for (int i = 0; i < line.size(); i++)
+		{
+			if (regexMatcher.match(0, line.substr(i, string::npos)) || regexIsEmpty)
+			{
+				cout << fileName << ":" << numberLine << ":" << lineOriginal << endl;
+				break;
+			}
+		}
+		
 		++numberLine;
 	}
 }
@@ -132,7 +136,7 @@ void readFile(string fileName, RegexParser regexMatcher, bool regexIsEmpty, bool
 //we must have filename/directory and regex string provided from cmd line
 void validateCmdParams(int argc, char* argv[])
 {
-	if (argc != 3)
+	if (argc < 3)
 	{
 		std::cerr << "Usage: " << argv[0] << " <FILE or DIRECTORY> <REGEX>" << "\n";
 		system("pause");
