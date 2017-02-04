@@ -7,7 +7,7 @@
 *
 * @author Stanislav Zmiycharov
 * @idnumber 61883
-* @task 1
+* @task 0
 * @compiler VC
 *
 */

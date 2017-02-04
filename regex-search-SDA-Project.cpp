@@ -20,10 +20,11 @@
 **Special symbols ("\s", "\d", "\a", "\e") should be enclosed in brackets "(f(\s))"
 **Concatenation between char and special symbol must be implicit ("(f(\s))" instead of "(f.(\s))")
 **Examples: 
+** - "" matches everything - so (a*) also matches everything
 ** - ((ab)*|(cd)*) matches "" or "ababab" or "cdcdcd" etc.
-** - (a*.b*) matches "" or "aaa" or "bbb" or "aaabbbb" etc.
-** - (((a.b)|(c.d)).((f.x)|(z.h))) matches "abfx" or "abzh" or "cdfx" etc.
-** - (b.a*) matches "b" or "ba" or "baaaa" etc
+** - (a*b*) matches "" or "aaa" or "bbb" or "aaabbbb" etc.
+** - (((ab)|(cd)).((fx)|(zh))) matches "abfx" or "abzh" or "cdfx" etc.
+** - (ba*) matches "b" or "ba" or "baaaa" etc
 **Regex match is case insensitive by default - to make it case sensitive, specify the "-s" switch 
 **		as fourth parameter when running the program
 *******************************************/
@@ -42,7 +43,7 @@ int main(int argc, char* argv[])
 	RegexParser regexMatcher;
 	struct stat info;
 
-	//argv 1 is the given file name or path from console
+	//argv 1 is the given file name or path from console; argv 2 is the regex string
 	string path = argv[1];
 	string regex = argv[2];
 
@@ -52,13 +53,12 @@ int main(int argc, char* argv[])
 		caseSensitive = true;
 	}
 
-	validateRegex(regex);
-	preprocessRegex(regex, caseSensitive);
-
 	bool regexIsEmpty = false;
 
 	if (!regex.empty())
 	{
+		validateRegex(regex);
+		preprocessRegex(regex, caseSensitive);
 		regexMatcher = regexMatcher.buildNFA(regex);
 	}
 	else

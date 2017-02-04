@@ -29,7 +29,7 @@ RegexParser RegexParser::buildNFA(string regex)
 	RegexParser *new_sym;
 	char curSymbol;
 	char operatorSymb;
-	int operandsCount;
+	int operatorsCount;
 
 	for (int i = 0; i < regex.size(); i++)
 	{
@@ -63,11 +63,12 @@ RegexParser RegexParser::buildNFA(string regex)
 			{
 				operators.Push(curSymbol);
 			}
+			// the symbol is ')'
 			else
 			{ 
 				char c;
 
-				operandsCount = 0;
+				operatorsCount = 0;
 				operatorSymb = operators.Top();
 
 				if (operatorSymb == '(') continue;
@@ -75,7 +76,7 @@ RegexParser RegexParser::buildNFA(string regex)
 				do 
 				{
 					operators.Pop();
-					operandsCount++;
+					operatorsCount++;
 				} while (operators.Top() != '(');
 
 				operators.Pop();
@@ -86,7 +87,7 @@ RegexParser RegexParser::buildNFA(string regex)
 				
 				if (operatorSymb == '.')
 				{
-					for (int i = 0; i < operandsCount; i++)
+					for (int i = 0; i < operatorsCount; i++)
 					{
 						op2 = operands.Top();
 						operands.Pop();
@@ -97,16 +98,16 @@ RegexParser RegexParser::buildNFA(string regex)
 				}
 				else if (operatorSymb == '|')
 				{
-					int trackerOperands = operandsCount;
+					int trackerOperators = operatorsCount;
 
-					for (int i = 0; i < operandsCount + 1; i++)
+					for (int i = 0; i < operatorsCount + 1; i++)
 					{
-						selections[trackerOperands] = operands.Top();
-						trackerOperands--;
+						selections[trackerOperators] = operands.Top();
+						trackerOperators--;
 						operands.Pop();
 					}
 
-					operands.Push(orSelection(selections, operandsCount + 1));
+					operands.Push(orSelection(selections, operatorsCount + 1));
 				}
 				else
 				{
@@ -182,10 +183,9 @@ RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
 {
 	RegexParser result;
 	result.increaseVertexCount(op1.getVertexCount() + op2.getVertexCount());
-	int i;
 	transition newTransition;
 
-	for (i = 0; i < op1.lengthTransitions; i++)
+	for (int i = 0; i < op1.lengthTransitions; i++)
 	{
 		newTransition = op1.transitions[i];
 		result.setTransition(newTransition.vertexFrom, newTransition.vertexTo, newTransition.transitionSymbol);
@@ -193,7 +193,7 @@ RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
 
 	result.setTransition(op1.getFinalState(), op1.getVertexCount(), '^');
 
-	for (i = 0; i < op2.lengthTransitions; i++)
+	for (int i = 0; i < op2.lengthTransitions; i++)
 	{
 		newTransition = op2.transitions[i];
 		result.setTransition(newTransition.vertexFrom + op1.getVertexCount(), newTransition.vertexTo + op1.getVertexCount(), newTransition.transitionSymbol);
@@ -207,35 +207,35 @@ RegexParser RegexParser::concatenation(RegexParser op1, RegexParser op2)
 RegexParser RegexParser::orSelection(RegexParser selections[50], int numbSelections)
 {
 	RegexParser result;
-	int vertex_count = 2;
-	int i, j;
-	RegexParser med;
+	int vertexCount = 2;
+	RegexParser curSelection;
 	transition newTransition;
 
-	for (i = 0; i < numbSelections; i++) {
-		vertex_count += selections[i].getVertexCount();
-	}
-
-	result.increaseVertexCount(vertex_count);
-
-	int adder_track = 1;
-
-	for (i = 0; i < numbSelections; i++)
+	for (int i = 0; i < numbSelections; i++) 
 	{
-		result.setTransition(0, adder_track, '^');
-		med = selections[i];
-		for (j = 0; j < med.lengthTransitions; j++)
-		{
-			newTransition = med.transitions[j];
-			lengthTransitions++;
-			result.setTransition(newTransition.vertexFrom + adder_track, newTransition.vertexTo + adder_track, newTransition.transitionSymbol);
-		}
-		adder_track += med.getVertexCount();
-
-		result.setTransition(adder_track - 1, vertex_count - 1, '^');
+		vertexCount += selections[i].getVertexCount();
 	}
 
-	result.setFinalState(vertex_count - 1);
+	result.increaseVertexCount(vertexCount);
+
+	int adderCounter = 1;
+
+	for (int i = 0; i < numbSelections; i++)
+	{
+		result.setTransition(0, adderCounter, '^');
+		curSelection = selections[i];
+		for (int j = 0; j < curSelection.lengthTransitions; j++)
+		{
+			newTransition = curSelection.transitions[j];
+			lengthTransitions++;
+			result.setTransition(newTransition.vertexFrom + adderCounter, newTransition.vertexTo + adderCounter, newTransition.transitionSymbol);
+		}
+		adderCounter += curSelection.getVertexCount();
+
+		result.setTransition(adderCounter - 1, vertexCount - 1, '^');
+	}
+
+	result.setFinalState(vertexCount - 1);
 
 	return result;
 }

@@ -20,7 +20,6 @@
 #include <cstdint>
 #include <algorithm>
 #include <string>
-#include "dirent.h"
 #include "RegexParser.h"
 
 void validateRegex(string re)

@@ -30,9 +30,6 @@
     <ClInclude Include="RegexParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="regex-search-SDA-Project.cpp">
