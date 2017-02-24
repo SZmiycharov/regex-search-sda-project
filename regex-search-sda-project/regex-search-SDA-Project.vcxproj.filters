@@ -18,27 +18,24 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HelperFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hash.h">
+    <ClInclude Include="DynamicStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegexParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="regex-search-SDA-Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="numbers-intersection-SDA5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hash.cpp">
+    <ClCompile Include="RegexParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

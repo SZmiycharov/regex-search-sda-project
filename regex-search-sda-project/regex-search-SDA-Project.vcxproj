@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E5F2A3B7-D6DD-49CB-8BA6-7846C3E26BC6}</ProjectGuid>
+    <ProjectGuid>{7AAD70F4-C929-47E8-8601-827AFA1DD5FA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>numbersintersectionSDA5</RootNamespace>
+    <RootNamespace>regexsearchSDAProject</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -81,15 +81,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicStack.h" />
     <ClInclude Include="HelperFunctions.h" />
-    <ClInclude Include="Hash.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="RegexParser.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hash.cpp" />
-    <ClCompile Include="numbers-intersection-SDA5.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="regex-search-SDA-Project.cpp" />
+    <ClCompile Include="RegexParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

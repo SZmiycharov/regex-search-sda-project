@@ -1,27 +1,27 @@
 ========================================================================
-    CONSOLE APPLICATION : numbers-intersection-SDA5 Project Overview
+    CONSOLE APPLICATION : regex-search-SDA-Project Project Overview
 ========================================================================
 
-AppWizard has created this numbers-intersection-SDA5 application for you.
+AppWizard has created this regex-search-SDA-Project application for you.
 
 This file contains a summary of what you will find in each of the files that
-make up your numbers-intersection-SDA5 application.
+make up your regex-search-SDA-Project application.
 
 
-numbers-intersection-SDA5.vcxproj
+regex-search-SDA-Project.vcxproj
     This is the main project file for VC++ projects generated using an Application Wizard.
     It contains information about the version of Visual C++ that generated the file, and
     information about the platforms, configurations, and project features selected with the
     Application Wizard.
 
-numbers-intersection-SDA5.vcxproj.filters
+regex-search-SDA-Project.vcxproj.filters
     This is the filters file for VC++ projects generated using an Application Wizard. 
     It contains information about the association between the files in your project 
     and the filters. This association is used in the IDE to show grouping of files with
     similar extensions under a specific node (for e.g. ".cpp" files are associated with the
     "Source Files" filter).
 
-numbers-intersection-SDA5.cpp
+regex-search-SDA-Project.cpp
     This is the main application source file.
 
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ Other standard files:
 
 StdAfx.h, StdAfx.cpp
     These files are used to build a precompiled header (PCH) file
-    named numbers-intersection-SDA5.pch and a precompiled types file named StdAfx.obj.
+    named regex-search-SDA-Project.pch and a precompiled types file named StdAfx.obj.
 
 /////////////////////////////////////////////////////////////////////////////
 Other notes:
